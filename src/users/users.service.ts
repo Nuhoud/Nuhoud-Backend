@@ -6,7 +6,6 @@ import { Model } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
 import { UserDocument } from './entities/user.entity';
 import * as bcrypt from 'bcryptjs';
-import { LoginUserDto } from '../auth/dto/login-auth.dto';
 @Injectable()
 export class UsersService {
   constructor(
@@ -28,6 +27,28 @@ export class UsersService {
     const createdUser = new this.userModel({
       ...createUserDto,
       password: hashedPassword,
+      role: 'user'
+    });
+
+    return createdUser.save();
+  }
+
+  async createAdmin(createAdminDto: CreateUserDto): Promise<User> {
+    // Check if user with email already exists
+    const existingUser = await this.userModel.findOne({ email: createAdminDto.email }).exec();
+    
+    if (existingUser) {
+      throw new ConflictException('Email already exists');
+    }
+
+    // Hash the password
+    const hashedPassword = await bcrypt.hash(createAdminDto.password, 10);
+
+    // Create new user with hashed password
+    const createdUser = new this.userModel({
+      ...createAdminDto,
+      password: hashedPassword,
+      role: 'admin'
     });
 
     return createdUser.save();

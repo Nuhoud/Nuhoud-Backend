@@ -17,6 +17,10 @@ export class AuthService {
       return this.usersService.create(signupUser);
   }
 
+  async signupAdmin(signupUser: CreateUserDto) {
+    return this.usersService.createAdmin(signupUser);
+  }
+
   async login(loginUser: LoginUserDto): Promise<any> {
     const user = await this.usersService.findByEmail(loginUser.email);
     if (!user) {
@@ -28,7 +32,7 @@ export class AuthService {
       throw new UnauthorizedException('Invalid email or password');
     }
 
-    const payload = { _id: user._id, name:user.name, email: user.email, userType: user.userType };
+    const payload = { _id: user._id, name:user.name, email: user.email, role: user.role };
     const token = await this.jwtService.signAsync(payload);
     return token;
   } 

@@ -1,5 +1,5 @@
 import { JwtService } from '@nestjs/jwt';
-import { AuthGuard } from './auth.guard';
+import { AuthGuard } from '../guards/auth.guard';
 import { Reflector } from '@nestjs/core';
 
 describe('BeltGuard', () => {
