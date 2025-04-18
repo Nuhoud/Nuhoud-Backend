@@ -49,6 +49,14 @@ export class User {
   })
   @Prop({ required: true, enum: ['admin', 'user'], default: 'user' })
   role: 'admin' | 'user';
+
+  @ApiProperty({
+    description: 'Whether the user email is verified',
+    example: false,
+    default: false
+  })
+  @Prop({ default: false })
+  isVerified: boolean;
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);

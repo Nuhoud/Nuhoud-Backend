@@ -1,6 +1,6 @@
 import { ApiProperty, PartialType } from '@nestjs/swagger';
 import { CreateUserDto } from './create-user.dto';
-import { IsArray, IsEmail, IsOptional, IsString, MinLength } from 'class-validator';
+import { IsArray, IsEmail, IsOptional, IsString, MinLength, IsBoolean } from 'class-validator';
 import { Types } from 'mongoose';
 
 export class UpdateUserDto extends PartialType(CreateUserDto) {
@@ -33,4 +33,16 @@ export class UpdateUserDto extends PartialType(CreateUserDto) {
     @IsString()
     @MinLength(8)
     password?: string;
+
+
+    @ApiProperty({
+        description: 'Whether the user email is verified',
+        example: false,
+        default: false,
+        required: false
+    })
+    @IsOptional()
+    @IsBoolean()
+    isVerified?: boolean;
+
 }

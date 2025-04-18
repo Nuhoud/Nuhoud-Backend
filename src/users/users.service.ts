@@ -12,13 +12,7 @@ export class UsersService {
     @InjectModel(User.name) private userModel: Model<UserDocument>,
   ) {}
 
-  async create(createUserDto: CreateUserDto): Promise<User> {
-    // Check if user with email already exists
-    const existingUser = await this.userModel.findOne({ email: createUserDto.email }).exec();
-    
-    if (existingUser) {
-      throw new ConflictException('Email already exists');
-    }
+  async create(createUserDto: CreateUserDto, isVerified: boolean, role: string): Promise<User> {
 
     // Hash the password
     const hashedPassword = await bcrypt.hash(createUserDto.password, 10);
@@ -27,28 +21,8 @@ export class UsersService {
     const createdUser = new this.userModel({
       ...createUserDto,
       password: hashedPassword,
-      role: 'user'
-    });
-
-    return createdUser.save();
-  }
-
-  async createAdmin(createAdminDto: CreateUserDto): Promise<User> {
-    // Check if user with email already exists
-    const existingUser = await this.userModel.findOne({ email: createAdminDto.email }).exec();
-    
-    if (existingUser) {
-      throw new ConflictException('Email already exists');
-    }
-
-    // Hash the password
-    const hashedPassword = await bcrypt.hash(createAdminDto.password, 10);
-
-    // Create new user with hashed password
-    const createdUser = new this.userModel({
-      ...createAdminDto,
-      password: hashedPassword,
-      role: 'admin'
+      role: role,
+      isVerified: isVerified
     });
 
     return createdUser.save();
