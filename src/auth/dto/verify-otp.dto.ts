@@ -3,12 +3,12 @@ import { IsEmail, IsNotEmpty, IsString, Length } from 'class-validator';
 
 export class VerifyOtpDto {
   @ApiProperty({
-    description: 'The email address to verify',
+    description: 'The identifier (email or mobile) to verify',
     example: 'user@example.com'
   })
-  @IsEmail({}, { message: 'Please provide a valid email address' })
-  @IsNotEmpty({ message: 'Email is required' })
-  email: string;
+  //@IsEmail({}, { message: 'Please provide a valid email address' })
+  @IsNotEmpty({ message: 'Identifier is required' })
+  identifier: string;
 
   @ApiProperty({
     description: 'The OTP code sent to the email',
@@ -18,4 +18,4 @@ export class VerifyOtpDto {
   @Length(5, 5, { message: 'OTP must be exactly 5 characters' })
   @IsNotEmpty({ message: 'OTP is required' })
   otp: string;
-}
+} 

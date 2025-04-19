@@ -1,4 +1,4 @@
-import { Body, Controller, Get, HttpCode, HttpStatus, Request, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, HttpCode, HttpStatus, Request, Post, UseGuards, Query } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { LoginUserDto } from './dto/login-auth.dto';
 import { AuthGuard } from './guards/auth.guard';
@@ -11,6 +11,7 @@ import { Role } from './enums/role.enums';
 import { Roles } from './decorators/roles.decorator';
 import { VerifyOtpDto } from './dto/verify-otp.dto';
 import { ResendOtpDto } from './dto/resend-otp.dto';
+import { SignupDto } from './dto/signup-auth.dto';
 
 @ApiTags('Authentication')
 @ApiBearerAuth()
@@ -23,18 +24,18 @@ export class AuthController {
 
     // signUP user
     @ApiOperation({ summary: 'Register a new user' })
-    @ApiBody({ type: CreateUserDto, description: 'User registration data' })
+    @ApiBody({ type: SignupDto, description: 'User registration data' })
     @ApiCreatedResponse({ 
         description: 'User has been successfully created',
-        type: CreateUserDto 
+        type: SignupDto 
     })
     @ApiResponse({ status: 400, description: 'Bad request' })
     @HttpCode(HttpStatus.CREATED)
     @Public()
     @Post('signup')
-    Signup(@Body() signupUser: CreateUserDto) {
-        console.log("gg");
-        return this.authService.signup(signupUser);
+    Signup(@Body() signupUser: SignupDto, @Query('isMobile') isMobile: boolean = false) {
+        ///console.log("gg");
+        return this.authService.signup(signupUser, isMobile);
     }
 
 
@@ -48,8 +49,8 @@ export class AuthController {
     @HttpCode(HttpStatus.OK)
     @Public()
     @Post('verify-otp')
-    vefifySignup(@Body() verifyOtp: VerifyOtpDto) {
-        return this.authService.verifyOtp(verifyOtp);
+    vefifySignup(@Body() verifyOtp: VerifyOtpDto, @Query('isMobile') isMobile: boolean = false) {
+        return this.authService.verifyOtp(verifyOtp, isMobile);
     }
 
     @ApiOperation({ summary: 'Resend OTP for user registration' })
@@ -62,8 +63,8 @@ export class AuthController {
     @HttpCode(HttpStatus.OK)
     @Public()
     @Post('resend-otp')
-    resendOTP(@Body() resendOtp: ResendOtpDto) {
-        return this.authService.resendOtp(resendOtp);
+    resendOTP(@Body() resendOtp: ResendOtpDto, @Query('isMobile') isMobile: boolean = false) {
+        return this.authService.resendOtp(resendOtp, isMobile);
     }
 
     
@@ -80,10 +81,9 @@ export class AuthController {
     @Roles(Role.ADMIN)
     @UseGuards(AuthGuard, RolesGuard)
     @Post('signup-admin')
-    SignupAdmin(@Body() signupUser: CreateUserDto) {
-        return this.authService.signupAdmin(signupUser);
+    SignupAdmin(@Body() signupUser: SignupDto) {
+        return this.authService.signupAdmin(signupUser, false);
     }
-
 
 
     // login
@@ -97,8 +97,8 @@ export class AuthController {
     @HttpCode(HttpStatus.OK)
     @Public()
     @Post('login')
-    Login(@Body() LoginUser: LoginUserDto) {
-      return this.authService.login(LoginUser);
+    Login(@Body() LoginUser: LoginUserDto, @Query('isMobile') isMobile: boolean = false) {
+      return this.authService.login(LoginUser,isMobile);
     }
 
 

@@ -17,14 +17,14 @@ export class OtpService {
   }
 
   //Generate a new OTP for the given email
-  async generateOtp(email: string): Promise<{ otpCode: string }> {
+  async generateOtp(identifier: string, isMobile: boolean): Promise<{ otpCode: string }> {
     const otpCode = otplib.authenticator.generateSecret(5).substring(0, 5);
     
     // Set expiry time (5 minutes from now)
     const expiresAt = new Date();
     expiresAt.setMinutes(expiresAt.getMinutes() + this.otpExpiryMinutes);
 
-    const existingOtp = await this.otpModel.findOne({ email }).exec();
+    const existingOtp = await this.otpModel.findOne({ [isMobile ? 'mobile' : 'email']: identifier }).exec();
 
     if (existingOtp) {
       // Update the existing OTP
@@ -35,7 +35,7 @@ export class OtpService {
     } else {
       // Create a new OTP record
       const newOtp = new this.otpModel({
-        email,
+        [isMobile ? 'mobile' : 'email']: identifier,
         code: otpCode,
         expiresAt,
         attempts: 0
@@ -48,11 +48,11 @@ export class OtpService {
 
 
   //Verify an OTP for the given email
-  async verifyOtp(email: string, code: string): Promise<boolean> {
-    const otp = await this.otpModel.findOne({ email }).exec();
+  async verifyOtp(identifier: string, isMobile: boolean = false, code: string): Promise<boolean> {
+    const otp = await this.otpModel.findOne({ [isMobile ? 'mobile' : 'email']: identifier }).exec();
 
     if (!otp) {
-      throw new NotFoundException('OTP not found for this email');
+      throw new NotFoundException('OTP not found for this identifier');
     }
 
     if (new Date() > otp.expiresAt) {
@@ -72,7 +72,7 @@ export class OtpService {
       throw new BadRequestException(`Invalid OTP. ${remainingAttempts} attempts remaining`);
     }
 
-    await this.otpModel.deleteOne({ email });
+    await this.otpModel.deleteOne({ [isMobile ? 'mobile' : 'email']: identifier });
 
     return true;
   }

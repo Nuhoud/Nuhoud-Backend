@@ -7,6 +7,7 @@ import * as dotenv from 'dotenv';
 dotenv.config();
 import { OtpModule } from 'src/otp/otp.module';
 import { EmailModule } from 'src/email/email.module';
+import { WhatsAppModule } from 'src/whatsapp/whatsapp.module';
 
 @Module({
     imports: [
@@ -17,7 +18,8 @@ import { EmailModule } from 'src/email/email.module';
             signOptions: { expiresIn: '7d' },
           }),
         OtpModule,
-        EmailModule
+        EmailModule,
+        WhatsAppModule,
       ],
     providers: [AuthService],
     controllers: [AuthController],

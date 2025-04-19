@@ -26,11 +26,18 @@ export class User {
   @ApiProperty({
     description: 'The email of the user',
     example: 'test@test.com',
-    required: true,
     uniqueItems: true
   })
-  @Prop({ required: true, unique: true })
+  @Prop({ unique: true })
   email: string;
+
+  @ApiProperty({
+    description: 'The mobile of the user',
+    example: '963936961320',
+    uniqueItems: true
+  })
+  @Prop({ unique: true })
+  mobile: string;
 
   @ApiProperty({
     description: 'The password of the user',

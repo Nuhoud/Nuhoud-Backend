@@ -1,4 +1,5 @@
 import { BadRequestException, ConflictException, Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
+import { SignupDto } from '../auth/dto/signup-auth.dto';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { User } from './entities/user.entity';
@@ -12,14 +13,22 @@ export class UsersService {
     @InjectModel(User.name) private userModel: Model<UserDocument>,
   ) {}
 
-  async create(createUserDto: CreateUserDto, isVerified: boolean, role: string): Promise<User> {
-
+  async create(createUserDto: SignupDto, isVerified: boolean, role: string, isMobile: boolean): Promise<User> {
+    const userData: CreateUserDto = {
+      name: createUserDto.name,
+      password: createUserDto.password,
+    };
+    if(isMobile){
+      userData.mobile = createUserDto.identifier;
+    }else{
+      userData.email = createUserDto.identifier;
+    }
     // Hash the password
-    const hashedPassword = await bcrypt.hash(createUserDto.password, 10);
+    const hashedPassword = await bcrypt.hash(userData.password, 10);
 
     // Create new user with hashed password
     const createdUser = new this.userModel({
-      ...createUserDto,
+      ...userData,
       password: hashedPassword,
       role: role,
       isVerified: isVerified
@@ -99,4 +108,14 @@ export class UsersService {
     return user;
   }
   
+  async findByMobile(mobile:string) :Promise<any> {
+    const user = await this.userModel.findOne({mobile}).exec();
+    return user;
+  }
+
+  async findByIdentifier(identifier: string,isMobile: boolean) :Promise<any> {
+    const user = await this.userModel.findOne({ [isMobile ? 'mobile' : 'email']: identifier }).exec();
+    return user;
+  }
+
 }
