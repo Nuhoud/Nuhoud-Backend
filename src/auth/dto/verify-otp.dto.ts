@@ -12,7 +12,7 @@ export class VerifyOtpDto {
 
   @ApiProperty({
     description: 'The OTP code sent to the email',
-    example: '123456'
+    example: '12345'
   })
   @IsString({ message: 'OTP must be a string' })
   @Length(5, 5, { message: 'OTP must be exactly 5 characters' })

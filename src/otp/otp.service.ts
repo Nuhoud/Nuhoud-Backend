@@ -18,7 +18,6 @@ export class OtpService {
 
   //Generate a new OTP for the given email
   async generateOtp(email: string): Promise<{ otpCode: string }> {
-    // Generate a 5-digit OTP
     const otpCode = otplib.authenticator.generateSecret(5).substring(0, 5);
     
     // Set expiry time (5 minutes from now)
@@ -32,7 +31,6 @@ export class OtpService {
       existingOtp.code = otpCode;
       existingOtp.expiresAt = expiresAt;
       existingOtp.attempts = 0;
-      existingOtp.isUsed = false;
       await existingOtp.save();
     } else {
       // Create a new OTP record
@@ -40,8 +38,7 @@ export class OtpService {
         email,
         code: otpCode,
         expiresAt,
-        attempts: 0,
-        isUsed: false,
+        attempts: 0
       });
       await newOtp.save();
     }
@@ -58,34 +55,24 @@ export class OtpService {
       throw new NotFoundException('OTP not found for this email');
     }
 
-    // Check if OTP is already used
-    if (otp.isUsed) {
-      throw new BadRequestException('OTP has already been used');
-    }
-
-    // Check if OTP is expired
     if (new Date() > otp.expiresAt) {
       throw new BadRequestException('OTP has expired');
     }
 
-    // Increment attempt counter
-    otp.attempts += 1;
-    await otp.save();
 
-    // Check if max attempts exceeded
+
     if (otp.attempts > this.maxAttempts) {
       throw new BadRequestException(`Maximum verification attempts (${this.maxAttempts}) exceeded`);
     }
+    otp.attempts += 1;
+    await otp.save();
 
-    // Verify the OTP code
     if (otp.code !== code) {
       const remainingAttempts = this.maxAttempts - otp.attempts;
       throw new BadRequestException(`Invalid OTP. ${remainingAttempts} attempts remaining`);
     }
 
-    // Mark OTP as used
-    otp.isUsed = true;
-    await otp.save();
+    await this.otpModel.deleteOne({ email });
 
     return true;
   }

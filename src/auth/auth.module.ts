@@ -5,6 +5,8 @@ import { AuthController } from './auth.controller';
 import { JwtModule } from '@nestjs/jwt';
 import * as dotenv from 'dotenv';
 dotenv.config();
+import { OtpModule } from 'src/otp/otp.module';
+import { EmailModule } from 'src/email/email.module';
 
 @Module({
     imports: [
@@ -14,6 +16,8 @@ dotenv.config();
             secret: process.env.JWT_SECRET,
             signOptions: { expiresIn: '7d' },
           }),
+        OtpModule,
+        EmailModule
       ],
     providers: [AuthService],
     controllers: [AuthController],

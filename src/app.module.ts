@@ -7,6 +7,8 @@ import { AuthService } from './auth/auth.service';
 import { AuthController } from './auth/auth.controller';
 import { AuthModule } from './auth/auth.module';
 import { ConfigModule } from '@nestjs/config';
+import { OtpModule } from './otp/otp.module';
+import { EmailModule } from './email/email.module';
 
 @Module({
   imports: [
@@ -14,6 +16,8 @@ import { ConfigModule } from '@nestjs/config';
     AuthModule,
     ConfigModule.forRoot({isGlobal: true}),
     UsersModule,
+    OtpModule,
+    EmailModule
   ],
   controllers: [AppController, AuthController],
   providers: [AppService, AuthService],

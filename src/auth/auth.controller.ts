@@ -10,7 +10,7 @@ import { resultUserDto } from './dto/result-atuh.dto';
 import { Role } from './enums/role.enums';
 import { Roles } from './decorators/roles.decorator';
 import { VerifyOtpDto } from './dto/verify-otp.dto';
-
+import { ResendOtpDto } from './dto/resend-otp.dto';
 
 @ApiTags('Authentication')
 @ApiBearerAuth()
@@ -33,6 +33,7 @@ export class AuthController {
     @Public()
     @Post('signup')
     Signup(@Body() signupUser: CreateUserDto) {
+        console.log("gg");
         return this.authService.signup(signupUser);
     }
 
@@ -49,6 +50,20 @@ export class AuthController {
     @Post('verify-otp')
     vefifySignup(@Body() verifyOtp: VerifyOtpDto) {
         return this.authService.verifyOtp(verifyOtp);
+    }
+
+    @ApiOperation({ summary: 'Resend OTP for user registration' })
+    @ApiBody({ type: ResendOtpDto, description: 'Resend OTP data' })
+    @ApiOkResponse({
+        description: 'OTP has been successfully resent',
+        type: resultUserDto
+    })
+    @ApiResponse({ status: 400, description: 'Bad request' })
+    @HttpCode(HttpStatus.OK)
+    @Public()
+    @Post('resend-otp')
+    resendOTP(@Body() resendOtp: ResendOtpDto) {
+        return this.authService.resendOtp(resendOtp);
     }
 
     

@@ -26,12 +26,17 @@ export class AuthService {
         throw new ConflictException('Email already exists');
       }
       try{
+        // Generate OTP
+        const { otpCode } = await this.otpService.generateOtp(signupUser.email);
+        // Send OTP email
+        await this.emailService.sendOtpEmail(signupUser.email, otpCode);
         // Create user with isVerified set to false
         const user = await this.usersService.create(signupUser, false, 'user');
-        // Generate OTP
-        const { otpCode } = await this.otpService.generateOtp(user.email);
-        // Send OTP email
-        await this.emailService.sendOtpEmail(user.email, otpCode);
+        return {
+          success: true,
+          message: 'OTP sent to your email',
+          email: user.email
+        };
       }catch(error){
         throw new BadRequestException('Failed to send OTP');
       }
@@ -72,13 +77,15 @@ export class AuthService {
     const user = await this.usersService.findByEmail(email);
     await this.usersService.update(user._id.toString(), { isVerified: true });
     
-    // Generate token for automatic login after verification
+
+    /*     
     const payload = { _id: user._id, name: user.name, email: user.email, role: user.role };
     const token = await this.jwtService.signAsync(payload);
+     */
     
     return {
+      success:true,
       message: 'Email verified successfully',
-      token
     };
   }
   

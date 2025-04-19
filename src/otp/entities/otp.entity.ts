@@ -45,14 +45,6 @@ export class Otp {
   })
   @Prop({ default: 0 })
   attempts: number;
-
-  @ApiProperty({
-    description: 'Whether the OTP has been used',
-    example: false,
-    default: false
-  })
-  @Prop({ default: false })
-  isUsed: boolean;
 }
 
 export const OtpSchema = SchemaFactory.createForClass(Otp);
