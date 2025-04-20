@@ -1,4 +1,4 @@
-import { Body, Controller, Get, HttpCode, HttpStatus, Request, Post, UseGuards, Query } from '@nestjs/common';
+import { Body, Controller, Get, HttpCode, HttpStatus, Request, Post, UseGuards, Query, ParseBoolPipe } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { LoginUserDto } from './dto/login-auth.dto';
 import { AuthGuard } from './guards/auth.guard';
@@ -33,8 +33,7 @@ export class AuthController {
     @HttpCode(HttpStatus.CREATED)
     @Public()
     @Post('signup')
-    Signup(@Body() signupUser: SignupDto, @Query('isMobile') isMobile: boolean = false) {
-        ///console.log("gg");
+    Signup(@Body() signupUser: SignupDto, @Query('isMobile', ParseBoolPipe) isMobile: boolean = false) {
         return this.authService.signup(signupUser, isMobile);
     }
 
@@ -49,7 +48,7 @@ export class AuthController {
     @HttpCode(HttpStatus.OK)
     @Public()
     @Post('verify-otp')
-    vefifySignup(@Body() verifyOtp: VerifyOtpDto, @Query('isMobile') isMobile: boolean = false) {
+    vefifySignup(@Body() verifyOtp: VerifyOtpDto, @Query('isMobile', ParseBoolPipe) isMobile: boolean  = false) {
         return this.authService.verifyOtp(verifyOtp, isMobile);
     }
 
@@ -63,7 +62,7 @@ export class AuthController {
     @HttpCode(HttpStatus.OK)
     @Public()
     @Post('resend-otp')
-    resendOTP(@Body() resendOtp: ResendOtpDto, @Query('isMobile') isMobile: boolean = false) {
+    resendOTP(@Body() resendOtp: ResendOtpDto, @Query('isMobile', ParseBoolPipe) isMobile: boolean  = false) {
         return this.authService.resendOtp(resendOtp, isMobile);
     }
 
@@ -97,7 +96,7 @@ export class AuthController {
     @HttpCode(HttpStatus.OK)
     @Public()
     @Post('login')
-    Login(@Body() LoginUser: LoginUserDto, @Query('isMobile') isMobile: boolean = false) {
+    Login(@Body() LoginUser: LoginUserDto, @Query('isMobile', ParseBoolPipe) isMobile: boolean = false) {
       return this.authService.login(LoginUser,isMobile);
     }
 

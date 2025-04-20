@@ -14,10 +14,12 @@ export class UsersService {
   ) {}
 
   async create(createUserDto: SignupDto, isVerified: boolean, role: string, isMobile: boolean): Promise<User> {
+    
     const userData: CreateUserDto = {
       name: createUserDto.name,
       password: createUserDto.password,
     };
+
     if(isMobile){
       userData.mobile = createUserDto.identifier;
     }else{

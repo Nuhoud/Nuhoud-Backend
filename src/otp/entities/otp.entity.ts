@@ -17,11 +17,19 @@ export class Otp {
 
   @ApiProperty({
     description: 'The email associated with this OTP',
-    example: 'user@example.com',
-    required: true
+    example: 'test@test.com',
+    uniqueItems: true
   })
-  @Prop({ required: true })
+  @Prop({ unique: true })
   email: string;
+
+  @ApiProperty({
+    description: 'The mobile associated with this OTP',
+    example: '963936961320',
+    uniqueItems: true
+  })
+  @Prop({ unique: true })
+  mobile: string;
 
   @ApiProperty({
     description: 'The OTP code',

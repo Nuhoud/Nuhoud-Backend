@@ -1,16 +1,15 @@
-import { Injectable, UnauthorizedException, BadRequestException, ConflictException } from '@nestjs/common';
+import { Injectable, UnauthorizedException, BadRequestException, ConflictException ,NotFoundException } from '@nestjs/common';
 import { LoginUserDto  } from './dto/login-auth.dto';
 import { UsersService } from 'src/users/users.service';
 import * as bcrypt from 'bcryptjs';
 import { JwtService } from '@nestjs/jwt';
-import { resultUserDto } from './dto/result-atuh.dto';
-import { CreateUserDto } from 'src/users/dto/create-user.dto';
 import { OtpService } from 'src/otp/otp.service';
 import { EmailService } from 'src/email/email.service';
 import { VerifyOtpDto } from './dto/verify-otp.dto';
 import { ResendOtpDto } from './dto/resend-otp.dto';
 import { WhatsAppService } from 'src/whatsapp/whatsapp.service';
 import { SignupDto } from './dto/signup-auth.dto';
+
 
 @Injectable()
 export class AuthService {
@@ -23,19 +22,11 @@ export class AuthService {
   ) {}
     
   async signup(signupUser: SignupDto  , isMobile: boolean) {
-
-      if (isMobile) {
-        const existingUser = await this.usersService.findByMobile(signupUser.identifier);
-        if (existingUser) {
-          throw new ConflictException('Mobile already exists');
-        }
-      }else{
-        const existingUser = await this.usersService.findByEmail(signupUser.identifier);
-        if (existingUser) {
-          throw new ConflictException('Email already exists');
-        }
+      const existingUser = await this.usersService.findByIdentifier(signupUser.identifier,isMobile);
+      if (existingUser) {
+        throw new ConflictException((isMobile ? 'mobile' : 'email')+ ' already exists');
       }
-
+        
       try{
         // Generate OTP
         const { otpCode } = await this.otpService.generateOtp(signupUser.identifier, isMobile);
@@ -45,12 +36,15 @@ export class AuthService {
         }else{
           await this.emailService.sendOtpEmail(signupUser.identifier, otpCode);
         }
+
         // Create user with isVerified set to false
         const user = await this.usersService.create(signupUser, false, 'user',isMobile);
+        
         return {
           success: true,
           message: 'OTP sent to your ' + (isMobile ? 'mobile' : 'email'),
-          identifier: signupUser.identifier
+          identifier: signupUser.identifier,
+          isMobile:isMobile
         };
       }catch(error){
         throw new BadRequestException('Failed to send OTP');
@@ -62,24 +56,21 @@ export class AuthService {
   }
 
   async login(loginUser: LoginUserDto,isMobile: boolean): Promise<any> {
-    let user;
-    if(isMobile){
-      user = await this.usersService.findByMobile(loginUser.identifier);
-    }else{
-      user = await this.usersService.findByEmail(loginUser.identifier);
-    }
+    
+    const user = await this.usersService.findByIdentifier(loginUser.identifier,isMobile)
+    
     if (!user) {
-      throw new UnauthorizedException('Invalid email or password');
+      throw new UnauthorizedException('Invalid ' + (isMobile ? 'mobile number' : 'email') + ' or password');
     }
 
     const isPasswordValid = await bcrypt.compare(loginUser.password, user.password);
     if (!isPasswordValid) {
-      throw new UnauthorizedException('Invalid email or password');
+      throw new UnauthorizedException('Invalid ' + (isMobile ? 'mobile' : 'email') + ' or password');
     }
     
     // Check if user is verified
     if (!user.isVerified) {
-      throw new UnauthorizedException('Email not verified. Please verify your email before logging in.');
+      throw new UnauthorizedException('account not verified');
     }
 
     const payload = { _id: user._id, name:user.name, email: user.email, role: user.role };
@@ -94,23 +85,15 @@ export class AuthService {
     await this.otpService.verifyOtp(identifier,isMobile, otp);
     
     // Update user to verified
-    let user;
-    if(isMobile){
-      user = await this.usersService.findByMobile(identifier);
-    }else{
-      user = await this.usersService.findByEmail(identifier);
-    }
+    const user = await this.usersService.findByIdentifier(identifier,isMobile);
     await this.usersService.update(user._id.toString(), { isVerified: true });
-    
-
     /*     
     const payload = { _id: user._id, name: user.name, email: user.email, role: user.role };
     const token = await this.jwtService.signAsync(payload);
      */
-    
     return {
       success:true,
-      message: 'Email verified successfully',
+      message: 'account verified successfully',
     };
   }
   
@@ -118,11 +101,14 @@ export class AuthService {
     const { identifier } = resendOtpDto;
     
     // Check if user exists
-    const user = await this.usersService.findByIdentifier(identifier,isMobile);
-    
-    // Check if user is already verified
-    if (user.isVerified) {
-      throw new BadRequestException('Email is already verified');
+  const user = await this.usersService.findByIdentifier(identifier,isMobile);
+  if(!user){
+    throw new NotFoundException(`User not found`);
+  }
+
+  // Check if user is already verified
+  if (user.isVerified) {
+    throw new BadRequestException('account is already verified');
     }
     
     // Generate new OTP
@@ -136,7 +122,10 @@ export class AuthService {
     }
     
     return {
-      message: 'OTP sent successfully'
+      success: true,
+      message: 'OTP sent successfully'+ (isMobile ? 'mobile' : 'email'),
+      identifier: resendOtpDto.identifier,
+      isMobile:isMobile
     };
   }
 }

@@ -17,11 +17,6 @@ export class WhatsAppService {
     this.apiPassword =  process.env.WHATSAPP_API_PASSWORD || '20022002';
   }
 
-  /**
-   * Send WhatsApp message
-   * @param messageData message data (phone number and message)
-   * @returns message result
-   */
   async sendWhatsAppMessage(messageData: WhatsAppMessageDto): Promise<any> {
     try {
       // validation
