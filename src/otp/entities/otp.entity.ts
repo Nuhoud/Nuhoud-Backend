@@ -20,7 +20,7 @@ export class Otp {
     example: 'test@test.com',
     uniqueItems: true
   })
-  @Prop({ unique: true })
+  @Prop({ unique: true ,sparse: true,type: String })
   email: string;
 
   @ApiProperty({
@@ -28,15 +28,15 @@ export class Otp {
     example: '963936961320',
     uniqueItems: true
   })
-  @Prop({ unique: true })
-  mobile: string;
+  @Prop({ unique: true ,sparse: true,type: String })
+  mobile?: string;
 
   @ApiProperty({
     description: 'The OTP code',
     example: '123456',
     required: true
   })
-  @Prop({ required: true })
+  @Prop({ required: true, type: String })
   code: string;
 
   @ApiProperty({
@@ -51,7 +51,7 @@ export class Otp {
     example: 0,
     default: 0
   })
-  @Prop({ default: 0 })
+  @Prop({ default: 0, type: Number })
   attempts: number;
 }
 

@@ -28,7 +28,7 @@ export class User {
     example: 'test@test.com',
     uniqueItems: true
   })
-  @Prop({ unique: true })
+  @Prop({ unique: true ,sparse: true,type: String })
   email: string;
 
   @ApiProperty({
@@ -36,7 +36,7 @@ export class User {
     example: '963936961320',
     uniqueItems: true
   })
-  @Prop({ unique: true })
+  @Prop({ unique: true ,sparse: true,type: String})
   mobile: string;
 
   @ApiProperty({

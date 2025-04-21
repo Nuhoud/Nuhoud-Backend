@@ -32,6 +32,7 @@ export class AuthService {
         const { otpCode } = await this.otpService.generateOtp(signupUser.identifier, isMobile);
 
         if(isMobile){
+          console.log('sendWhatsAppMessage');
           await this.whatsappService.sendWhatsAppMessage({phone: signupUser.identifier, message: otpCode.toString()});
         }else{
           await this.emailService.sendOtpEmail(signupUser.identifier, otpCode);
@@ -47,7 +48,7 @@ export class AuthService {
           isMobile:isMobile
         };
       }catch(error){
-        throw new BadRequestException('Failed to send OTP');
+        throw new BadRequestException(error);
       }
   }
   
