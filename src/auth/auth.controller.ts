@@ -12,6 +12,7 @@ import { Roles } from './decorators/roles.decorator';
 import { VerifyOtpDto } from './dto/verify-otp.dto';
 import { ResendOtpDto } from './dto/resend-otp.dto';
 import { SignupDto } from './dto/signup-auth.dto';
+import { ResetPasswordDto } from './dto/resetPassword-auth.dto';
 
 @ApiTags('Authentication')
 @ApiBearerAuth()
@@ -33,7 +34,7 @@ export class AuthController {
     @HttpCode(HttpStatus.CREATED)
     @Public()
     @Post('signup')
-    Signup(@Body() signupUser: SignupDto, @Query('isMobile', ParseBoolPipe) isMobile: boolean = false) {
+    async Signup(@Body() signupUser: SignupDto, @Query('isMobile', ParseBoolPipe) isMobile: boolean = false) {
         return this.authService.signup(signupUser, isMobile);
     }
 
@@ -48,7 +49,7 @@ export class AuthController {
     @HttpCode(HttpStatus.OK)
     @Public()
     @Post('verify-otp')
-    vefifySignup(@Body() verifyOtp: VerifyOtpDto, @Query('isMobile', ParseBoolPipe) isMobile: boolean  = false) {
+    async vefifySignup(@Body() verifyOtp: VerifyOtpDto, @Query('isMobile', ParseBoolPipe) isMobile: boolean  = false) {
         return this.authService.verifyOtp(verifyOtp, isMobile);
     }
 
@@ -62,10 +63,26 @@ export class AuthController {
     @HttpCode(HttpStatus.OK)
     @Public()
     @Post('resend-otp')
-    resendOTP(@Body() resendOtp: ResendOtpDto, @Query('isMobile', ParseBoolPipe) isMobile: boolean  = false) {
+    async resendOTP(@Body() resendOtp: ResendOtpDto, @Query('isMobile', ParseBoolPipe) isMobile: boolean  = false) {
         return this.authService.resendOtp(resendOtp, isMobile);
     }
 
+
+    @ApiOperation({ summary: 'Request password reset' })
+    @ApiBody({ type: ResetPasswordDto, description: 'Password reset data' })
+    @Public()
+    @Post('requestResetPassword')
+    async requestResetPassword(@Body() identifier: string, @Query('isMobile', ParseBoolPipe) isMobile: boolean  = false){
+        return this.authService.requestPasswordReset(identifier,isMobile);
+    }
+
+    @ApiOperation({ summary: 'Reset password' })
+    @ApiBody({ type: ResetPasswordDto, description: 'Password reset data' })
+    @UseGuards(AuthGuard)
+    @Post('resetPassword')
+    async resetPassword(@Body() resetPasswordDto: ResetPasswordDto, @Query('isMobile', ParseBoolPipe) isMobile: boolean  = false){
+        return this.authService.resetPassword(resetPasswordDto,isMobile);
+    }
     
     // signup admin
     @ApiOperation({ summary: 'Register a new admin user' })
@@ -80,7 +97,7 @@ export class AuthController {
     @Roles(Role.ADMIN)
     @UseGuards(AuthGuard, RolesGuard)
     @Post('signup-admin')
-    SignupAdmin(@Body() signupUser: SignupDto) {
+    async SignupAdmin(@Body() signupUser: SignupDto) {
         return this.authService.signupAdmin(signupUser, false);
     }
 
@@ -96,7 +113,7 @@ export class AuthController {
     @HttpCode(HttpStatus.OK)
     @Public()
     @Post('login')
-    Login(@Body() LoginUser: LoginUserDto, @Query('isMobile', ParseBoolPipe) isMobile: boolean = false) {
+    async Login(@Body() LoginUser: LoginUserDto, @Query('isMobile', ParseBoolPipe) isMobile: boolean = false) {
       return this.authService.login(LoginUser,isMobile);
     }
 
@@ -111,7 +128,7 @@ export class AuthController {
     @ApiResponse({ status: 401, description: 'Unauthorized' })
     @UseGuards(AuthGuard)
     @Get('profile')
-    getProfile(@Request() req: Request) {
+    async getProfile(@Request() req: Request) {
       return req['user'];
     }
 

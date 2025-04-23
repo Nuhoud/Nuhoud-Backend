@@ -18,8 +18,11 @@ export class UsersController {
 
   constructor(private readonly usersService: UsersService) {}
 
+
+
+
+
   // get all users
-  @ApiOperation({ summary: 'Get all users' })
   @ApiOkResponse({ 
     description: 'Returns all users',
     type: CreateUserDto,
@@ -34,7 +37,6 @@ export class UsersController {
 
 
   // get user by id
-  @ApiOperation({ summary: 'Get a user by ID' })
   @ApiParam({ name: 'id', description: 'User ID', type: 'string' })
   @ApiOkResponse({ 
     description: 'Returns a user by ID',
@@ -48,19 +50,12 @@ export class UsersController {
 
 
   // update user by
-  @ApiOperation({ summary: 'Update a user' })
   @ApiParam({ name: 'id', description: 'User ID', type: 'string' })
   @ApiBody({ type: UpdateUserDto, description: 'User data to update' })
-  @ApiOkResponse({ 
-    description: 'Returns the updated user',
-    type: CreateUserDto
-  })
+  @ApiOkResponse({ description: 'Returns the updated user',type: CreateUserDto})
   @ApiResponse({ status: 404, description: 'User not found' })
   @Patch(':id')
-  async update(
-    @Param('id') id: string,
-    @Body() updateUserDto: UpdateUserDto,
-  ): Promise<User> {
+  async update(@Param('id') id: string,@Body() updateUserDto: UpdateUserDto): Promise<User> {
     return this.usersService.update(id, updateUserDto);
   }
 

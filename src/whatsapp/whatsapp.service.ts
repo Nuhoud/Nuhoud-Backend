@@ -50,18 +50,10 @@ export class WhatsAppService {
         data: response.data,
       };
     } catch (error) {
-      // error handling
       console.error('Error sending WhatsApp message:', error.message);
       
       // return error message
-      throw new HttpException(
-        {
-          success: false,
-          message: 'Failed to send WhatsApp message',
-          error: error.message,
-        },
-        error.response?.status || HttpStatus.INTERNAL_SERVER_ERROR,
-      );
+      throw new HttpException('Failed to send OTO via WhatsApp message',HttpStatus.INTERNAL_SERVER_ERROR,);
     }
   }
 }

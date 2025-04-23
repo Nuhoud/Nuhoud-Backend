@@ -1,4 +1,4 @@
-import { BadRequestException, ConflictException, Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
+import { BadRequestException, ConflictException, Injectable, InternalServerErrorException, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { SignupDto } from '../auth/dto/signup-auth.dto';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
@@ -14,33 +14,45 @@ export class UsersService {
   ) {}
 
   async create(createUserDto: SignupDto, isVerified: boolean, role: string, isMobile: boolean): Promise<User> {
-    
-    const userData: CreateUserDto = {
-      name: createUserDto.name,
-      password: createUserDto.password,
-    };
-
-    if(isMobile){
-      userData.mobile = createUserDto.identifier;
-    }else{
-      userData.email = createUserDto.identifier;
+    try{
+      const userData: CreateUserDto = {
+        name: createUserDto.name,
+        password: createUserDto.password,
+      };
+  
+      if(isMobile){
+        userData.mobile = createUserDto.identifier;
+      }else{
+        userData.email = createUserDto.identifier;
+      }
+      // Hash the password
+      const hashedPassword = await bcrypt.hash(userData.password, 10);
+  
+      // Create new user with hashed password
+      const createdUser = new this.userModel({
+        ...userData,
+        password: hashedPassword,
+        role: role,
+        isVerified: isVerified
+      });
+  
+      return createdUser.save();
+    }catch(error){
+      if (error.code === 11000) {
+        // Handle duplicate key error (unique constraint violation)
+        const field = Object.keys(error.keyPattern)[0];
+        throw new ConflictException(`User with this ${field} already exists`);
+      }
+      throw new InternalServerErrorException('Failed to create user');
     }
-    // Hash the password
-    const hashedPassword = await bcrypt.hash(userData.password, 10);
-
-    // Create new user with hashed password
-    const createdUser = new this.userModel({
-      ...userData,
-      password: hashedPassword,
-      role: role,
-      isVerified: isVerified
-    });
-
-    return createdUser.save();
   }
 
   async findAll(): Promise<User[]> {
-    return this.userModel.find().exec();
+    try {
+      return await this.userModel.find().exec();
+    } catch (error) {
+      throw new InternalServerErrorException('Failed to find users');;
+    }
   }
 
   async findOne(id: string): Promise<User> {
@@ -56,7 +68,7 @@ export class UsersService {
       if (error.name === 'CastError') {
         throw new BadRequestException('Invalid user ID format');
       }
-      throw error;
+      throw new InternalServerErrorException('Failed to find user');;
     }
   }
 
@@ -81,7 +93,7 @@ export class UsersService {
       if (error.name === 'CastError') {
         throw new BadRequestException('Invalid user ID format');
       }
-      throw error;
+      throw new InternalServerErrorException('Failed to update user');;
     }
   }
 
@@ -96,17 +108,13 @@ export class UsersService {
       if (error.name === 'CastError') {
         throw new BadRequestException('Invalid user ID format');
       }
-      throw error;
+      throw new InternalServerErrorException('Failed to delete user');
     }
   }
 
   // ymkn n7ntajha -- maybe in future needed
   async findByEmail(email: string): Promise<any> {
     const user = await this.userModel.findOne({ email }).exec();
-    /*  
-    if (!user) {
-      throw new NotFoundException(`User with email ${email} not found`);
-    } */
     return user;
   }
   

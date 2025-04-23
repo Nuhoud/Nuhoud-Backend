@@ -18,6 +18,7 @@ export class OtpService {
 
   //Generate a new OTP for the given email
   async generateOtp(identifier: string, isMobile: boolean): Promise<{ otpCode: string }> {
+    
     const otpCode = otplib.authenticator.generateSecret(5).substring(0, 5);
     
     // Set expiry time (5 minutes from now)
@@ -42,7 +43,6 @@ export class OtpService {
       });
       await newOtp.save();
     }
-
     return { otpCode };
   }
 
