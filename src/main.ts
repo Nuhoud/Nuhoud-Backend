@@ -1,22 +1,19 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
-import { DocumentBuilder,SwaggerModule } from '@nestjs/swagger';
-
+import { GlobalPipes } from './config/global-pipes';
+import { setupSwagger } from './config/swagger.config';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
-  const config = new DocumentBuilder()
-    .setTitle('Nuhoud')
-    .setDescription('The Nuhoud API description')
-    .setVersion('1.0')
-    .addTag('Nuhoud')
-    .addBearerAuth()
-    .build();
-  
-  const document = SwaggerModule.createDocument(app, config);
-  //SwaggerModule.setup('/', app, document);
-  SwaggerModule.setup('api', app, document);
-  
+
+  // Enable global pipes
+  // Toggling the global pipes for validation and transformation across the app
+  app.useGlobalPipes(...GlobalPipes);
+
+  //  Enable Swagger
+  // Setting up Swagger for API documentation and testing
+  setupSwagger(app);
+
   await app.listen(process.env.PORT ?? 3000);
 }
 bootstrap();

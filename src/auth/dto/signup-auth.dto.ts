@@ -1,33 +1,39 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsEmail, IsEnum, IsNotEmpty, IsString, MaxLength, MinLength } from 'class-validator';
+import {
+  IsEmail,
+  IsNotEmpty,
+  IsString,
+  MaxLength,
+  MinLength,
+} from 'class-validator';
 
 export class SignupDto {
   @ApiProperty({
     description: 'The name of the user',
     example: 'John Doe',
-    required: true
+    required: true,
   })
-  @IsNotEmpty()
-  @IsString()
+  @IsNotEmpty({ message: 'Name is required' })
+  @IsString({ message: 'Name must be a string' })
   name: string;
 
   @ApiProperty({
     description: 'The email or mobile of the user',
     example: 'test@test.com',
-    required: true
+    required: true,
   })
-  @IsNotEmpty()
-  @IsString()
+  @IsNotEmpty({ message: 'Identifier is required' })
+  @IsString({ message: 'Identifier must be a string' })
   identifier: string;
 
   @ApiProperty({
     description: 'The password of the user',
     example: 'pass123',
     required: true,
-    minLength: 8
+    minLength: 8,
   })
-  @IsNotEmpty()
-  @IsString()
-  @MinLength(8)
+  @IsNotEmpty({ message: 'Password is required' })
+  @IsString({ message: 'Password must be a string' })
+  @MinLength(8, { message: 'Password must be at least 8 characters long' })
   password: string;
 }
