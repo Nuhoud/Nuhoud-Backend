@@ -10,7 +10,7 @@ async function bootstrap() {
   // Toggling the global pipes for validation and transformation across the app
   app.useGlobalPipes(...GlobalPipes);
 
-  //  Enable Swagger
+  // Enable Swagger
   // Setting up Swagger for API documentation and testing
   setupSwagger(app);
 
