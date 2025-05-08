@@ -4,9 +4,8 @@ import { IsEmail, IsNotEmpty } from 'class-validator';
 export class ResendOtpDto {
   @ApiProperty({
     description: 'The email or mobile to send OTP to',
-    example: 'user@example.com'
+    example: 'kallnaorz2@gmail.com or 963936961320'
   })
-  @IsEmail({}, { message: 'Please provide a valid email address' })
-  @IsNotEmpty({ message: 'Email is required' })
+  @IsNotEmpty({ message: 'identifier is required' })
   identifier: string;
 }

@@ -19,7 +19,7 @@ export class SignupDto {
 
   @ApiProperty({
     description: 'The email or mobile of the user',
-    example: 'test@test.com',
+    example: 'kallnaorz2@gmail.com or 963936961320',
     required: true,
   })
   @IsNotEmpty({ message: 'Identifier is required' })

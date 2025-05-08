@@ -19,7 +19,7 @@ export class CreateUserDto {
 
   @ApiProperty({
     description: 'The email of the user',
-    example: 'test@test.com',
+    example: 'kallnaorz2@gmail.com',
     required: false,
   })
   @IsEmail({}, { message: 'Invalid email format' })
@@ -28,7 +28,7 @@ export class CreateUserDto {
 
   @ApiProperty({
     description: 'The mobile of the user',
-    example: '123456789012',
+    example: '963936961320',
     required: false,
   })
   @IsString({ message: 'Mobile number must be a string' })

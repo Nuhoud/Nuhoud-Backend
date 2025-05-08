@@ -10,6 +10,7 @@ import { ResendOtpDto } from './dto/resend-otp.dto';
 import { WhatsAppService } from 'src/whatsapp/whatsapp.service';
 import { SignupDto } from './dto/signup-auth.dto';
 import {ResetPasswordDto} from './dto/resetPassword-auth.dto'
+import { identity } from 'rxjs';
 
 @Injectable()
 export class AuthService {
@@ -73,7 +74,7 @@ export class AuthService {
         throw new ForbiddenException('Account not verified');
       }
   
-      const payload = { _id: user._id, name:user.name, email: user.email, role: user.role };
+      const payload = { _id: user._id, name:user.name, identifier: isMobile? user.mobile : user.email, role: user.role };
       const token = await this.jwtService.signAsync(payload);
       return token;
     }catch(error){
@@ -91,7 +92,7 @@ export class AuthService {
     const user = await this.usersService.findByIdentifier(identifier,isMobile);
     await this.usersService.update(user._id.toString(), { isVerified: true });
         
-    const payload = { _id: user._id, name: user.name, email: user.email, role: user.role };
+    const payload = { _id: user._id, name: user.name, identifier: isMobile? user.mobile : user.email, role: user.role };
     const token = await this.jwtService.signAsync(payload);
     
     return {
@@ -138,6 +139,7 @@ export class AuthService {
   
   async requestPasswordReset(identifier: string, isMobile: boolean): Promise<any> {
     // Check if user exists
+    //console.log(identifier);
     const user = await this.usersService.findByIdentifier(identifier, isMobile);
     if (!user) {
       throw new NotFoundException(`User with this ${isMobile ? 'mobile number' : 'email'} not found`);

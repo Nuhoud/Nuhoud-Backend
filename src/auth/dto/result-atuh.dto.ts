@@ -3,12 +3,12 @@ import { ApiProperty } from '@nestjs/swagger';
 
 export class resultUserDto {
   @ApiProperty({
-    description: 'The email of the authenticated user',
-    example: 'user@example.com'
+    description: 'The identifier of the authenticated user',
+    example: 'kallnaorz2@gmail.com or 963936961320'
   })
   @IsNotEmpty()
-  @IsEmail()
-  email: string;
+  @IsString()
+  identifier: string;
 
   @ApiProperty({
     description: 'JWT access token for authentication',

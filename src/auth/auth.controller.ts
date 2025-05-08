@@ -13,6 +13,7 @@ import { VerifyOtpDto } from './dto/verify-otp.dto';
 import { ResendOtpDto } from './dto/resend-otp.dto';
 import { SignupDto } from './dto/signup-auth.dto';
 import { ResetPasswordDto } from './dto/resetPassword-auth.dto';
+import { RequestResetPasswordDto } from './dto/requestResetPassword-auth.dto';
 
 @ApiTags('Authentication')
 @ApiBearerAuth()
@@ -39,12 +40,9 @@ export class AuthController {
     }
 
 
+    // verify-otp
     @ApiOperation({ summary: 'Verify OTP for user registration' })
     @ApiBody({ type: VerifyOtpDto, description: 'OTP verification data' })
-    @ApiOkResponse({
-        description: 'OTP has been successfully verified',
-        type: resultUserDto
-    })
     @ApiResponse({ status: 400, description: 'Bad request' })
     @HttpCode(HttpStatus.OK)
     @Public()
@@ -53,11 +51,12 @@ export class AuthController {
         return this.authService.verifyOtp(verifyOtp, isMobile);
     }
 
+
+    // resend-otp
     @ApiOperation({ summary: 'Resend OTP for user registration' })
     @ApiBody({ type: ResendOtpDto, description: 'Resend OTP data' })
     @ApiOkResponse({
         description: 'OTP has been successfully resent',
-        type: resultUserDto
     })
     @ApiResponse({ status: 400, description: 'Bad request' })
     @HttpCode(HttpStatus.OK)
@@ -68,14 +67,27 @@ export class AuthController {
     }
 
 
+    // requestResetPassword
     @ApiOperation({ summary: 'Request password reset' })
-    @ApiBody({ type: ResetPasswordDto, description: 'Password reset data' })
+    @ApiBody({ type: RequestResetPasswordDto, description: 'Password reset data' })
     @Public()
     @Post('requestResetPassword')
-    async requestResetPassword(@Body() identifier: string, @Query('isMobile', ParseBoolPipe) isMobile: boolean  = false){
-        return this.authService.requestPasswordReset(identifier,isMobile);
+    async requestResetPassword(@Body() requestResetPasswordDto: RequestResetPasswordDto, @Query('isMobile', ParseBoolPipe) isMobile: boolean  = false){
+        return this.authService.requestPasswordReset(requestResetPasswordDto.identifier,isMobile);
     }
 
+    // verify ResetPassword Otp
+    @ApiOperation({ summary: 'Verify OTP for reset password' })
+    @ApiBody({ type: VerifyOtpDto, description: 'OTP verification data' })
+    @ApiResponse({ status: 400, description: 'Bad request' })
+    @HttpCode(HttpStatus.OK)
+    @Public()
+    @Post('verifyResetPasswordOtp')
+    async verifyResetPasswordOtp(@Body() verifyResetPasswordDto: VerifyOtpDto, @Query('isMobile', ParseBoolPipe) isMobile: boolean  = false){
+        return this.authService.verifyOtp(verifyResetPasswordDto,isMobile);
+    }
+
+    // resetPassword
     @ApiOperation({ summary: 'Reset password' })
     @ApiBody({ type: ResetPasswordDto, description: 'Password reset data' })
     @UseGuards(AuthGuard)
@@ -86,10 +98,10 @@ export class AuthController {
     
     // signup admin
     @ApiOperation({ summary: 'Register a new admin user' })
-    @ApiBody({ type: CreateUserDto, description: 'Admin user registration data' })
+    @ApiBody({ type: SignupDto, description: 'Admin user registration data' })
     @ApiCreatedResponse({ 
         description: 'Admin user has been successfully created',
-        type: CreateUserDto 
+        type: SignupDto 
     })
     @ApiResponse({ status: 400, description: 'Bad request' })
     @HttpCode(HttpStatus.CREATED)
@@ -106,8 +118,7 @@ export class AuthController {
     @ApiOperation({ summary: 'Login with credentials' })
     @ApiBody({ type: LoginUserDto, description: 'User login credentials' })
     @ApiOkResponse({
-        description: 'User has been successfully logged in',
-        type: resultUserDto
+        description: 'User has been successfully logged in, Returns the jwt token',
     })
     @ApiResponse({ status: 401, description: 'Unauthorized' })
     @HttpCode(HttpStatus.OK)
@@ -123,7 +134,6 @@ export class AuthController {
     @ApiOperation({ summary: 'Get user profile' })
     @ApiOkResponse({
         description: 'Returns the user profile',
-        type: CreateUserDto
     })
     @ApiResponse({ status: 401, description: 'Unauthorized' })
     @UseGuards(AuthGuard)

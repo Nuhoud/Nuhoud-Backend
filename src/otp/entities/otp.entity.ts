@@ -17,7 +17,7 @@ export class Otp {
 
   @ApiProperty({
     description: 'The email associated with this OTP',
-    example: 'test@test.com',
+    example: 'kallnaorz2@gmail.com',
     uniqueItems: true
   })
   @Prop({ unique: true ,sparse: true,type: String })

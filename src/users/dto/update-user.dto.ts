@@ -21,7 +21,7 @@ export class UpdateUserDto extends PartialType(CreateUserDto) {
 
   @ApiProperty({
     description: 'The email of the user',
-    example: 'test3@test.com',
+    example: 'kallnaorz2@gmail.com',
     required: false,
   })
   @IsOptional()
@@ -41,7 +41,7 @@ export class UpdateUserDto extends PartialType(CreateUserDto) {
 
   @ApiProperty({
     description: 'The password of the user',
-    example: 'pass321',
+    example: 'pass1234',
     required: false,
     minLength: 8,
   })
