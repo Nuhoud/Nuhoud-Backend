@@ -7,7 +7,7 @@ import * as dotenv from 'dotenv';
 dotenv.config();
 import { OtpModule } from 'src/otp/otp.module';
 import { EmailModule } from 'src/email/email.module';
-import { WhatsAppModule } from 'src/whatsapp/whatsapp.module';
+import { WhatsappModule } from 'src/whatsapp-grpc/whatsapp.module';
 
 @Module({
     imports: [
@@ -19,7 +19,7 @@ import { WhatsAppModule } from 'src/whatsapp/whatsapp.module';
           }),
         OtpModule,
         EmailModule,
-        WhatsAppModule,
+        WhatsappModule,
       ],
     providers: [AuthService],
     controllers: [AuthController],

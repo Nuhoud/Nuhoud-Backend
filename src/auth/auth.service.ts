@@ -7,10 +7,12 @@ import { OtpService } from 'src/otp/otp.service';
 import { EmailService } from 'src/email/email.service';
 import { VerifyOtpDto } from './dto/verify-otp.dto';
 import { ResendOtpDto } from './dto/resend-otp.dto';
-import { WhatsAppService } from 'src/whatsapp/whatsapp.service';
+import { WhatsappService } from 'src/whatsapp-grpc/whatsapp.service';
 import { SignupDto } from './dto/signup-auth.dto';
 import {ResetPasswordDto} from './dto/resetPassword-auth.dto'
 import { identity } from 'rxjs';
+import { text } from 'stream/consumers';
+
 
 @Injectable()
 export class AuthService {
@@ -19,7 +21,7 @@ export class AuthService {
       private jwtService: JwtService,
       private otpService: OtpService,
       private emailService: EmailService,
-      private whatsappService: WhatsAppService
+      private whatsappService: WhatsappService
   ) {}
     
   async signup(signupUser: SignupDto  , isMobile: boolean) {
@@ -33,7 +35,18 @@ export class AuthService {
 
       if(isMobile){
         console.log('sendWhatsAppMessage');
-        await this.whatsappService.sendWhatsAppMessage({phone: signupUser.identifier, message: otpCode.toString()});
+        this.whatsappService.sendMessage(signupUser.identifier, otpCode.toString())
+        .subscribe({
+          next: (result) => {
+            console.log('WhatsApp message sent successfully:', result);
+          },
+          error: (err) => {
+            console.error('Error sending WhatsApp message:', err);
+          },
+          complete: () => {
+            console.log('WhatsApp message sending completed');
+          }
+        });
       }else{
         await this.emailService.sendOtpEmail(signupUser.identifier, otpCode);
       }
@@ -123,7 +136,7 @@ export class AuthService {
     
     // Send OTP
     if(isMobile){
-      await this.whatsappService.sendWhatsAppMessage({phone: identifier, message: otpCode.toString()});
+      await this.whatsappService.sendMessage(identifier, otpCode.toString());
     }else{
       await this.emailService.sendOtpEmail(identifier, otpCode);
     }
@@ -150,10 +163,10 @@ export class AuthService {
   
     // Send OTP via email or WhatsApp
     if (isMobile) {
-      await this.whatsappService.sendWhatsAppMessage({
-        phone: identifier, 
-        message: `Your password reset code is: ${otpCode}`
-      });
+      await this.whatsappService.sendMessage(
+        identifier, 
+        `Your password reset code is: ${otpCode}`
+      );
     } else {
       await this.emailService.sendOtpEmail(
         identifier, 

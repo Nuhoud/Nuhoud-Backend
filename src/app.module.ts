@@ -9,7 +9,7 @@ import { AuthModule } from './auth/auth.module';
 import { ConfigModule } from '@nestjs/config';
 import { OtpModule } from './otp/otp.module';
 import { EmailModule } from './email/email.module';
-import { WhatsAppModule } from './whatsapp/whatsapp.module';
+import { WhatsappModule } from './whatsapp-grpc/whatsapp.module';
 
 @Module({
   imports: [
@@ -19,7 +19,7 @@ import { WhatsAppModule } from './whatsapp/whatsapp.module';
     UsersModule,
     OtpModule,
     EmailModule,
-    WhatsAppModule,
+    WhatsappModule,
   ],
   controllers: [AppController, AuthController],
   providers: [AppService, AuthService],
