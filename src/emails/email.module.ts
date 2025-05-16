@@ -1,15 +1,16 @@
 import { Module } from '@nestjs/common';
 import { ClientsModule, Transport } from '@nestjs/microservices';
 import { join } from 'path';
-import { WhatsappService } from './whatsapp.service';
+import { EmailsService } from './email.service';
 import * as dotenv from 'dotenv';
 dotenv.config();
 
 @Module({
-  imports: [ 
+  imports: 
+  [ 
     ClientsModule.register([
       {
-        name: 'WHATSAPP_PACKAGE',
+        name: 'EMAILS_PACKAGE',
         transport: Transport.GRPC,
         options: {
           package: 'alerts',
@@ -19,7 +20,7 @@ dotenv.config();
       },
     ]),
   ],
-  providers: [WhatsappService],
-  exports: [WhatsappService],
+  providers: [EmailsService],
+  exports: [EmailsService],
 })
-export class WhatsappModule {}
+export class EmailsModule {}

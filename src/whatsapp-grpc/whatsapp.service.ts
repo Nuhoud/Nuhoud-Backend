@@ -7,7 +7,7 @@ dotenv.config();
 
 interface SendMessageRequest {
   mobileNumber: string;
-  text: string;
+  message: string;
 }
 
 interface SendMessageResponse {
@@ -16,7 +16,7 @@ interface SendMessageResponse {
 }
 
 interface WhatsAppService {
-  SendMessage(
+  sendMessage(
     request: SendMessageRequest,
     metadata?: Metadata
   ): Observable<SendMessageResponse>;
@@ -29,13 +29,14 @@ export class WhatsappService implements OnModuleInit {
   constructor(@Inject('WHATSAPP_PACKAGE') private client: ClientGrpc) {}
 
   onModuleInit() {
-    this.service = this.client.getService<WhatsAppService>('WhatsApp');
+    this.service = this.client.getService<WhatsAppService>('WhatsAppService');
   }
 
-  sendMessage(mobileNumber: string, text: string): Observable<SendMessageResponse> {
+  sendMessage(mobileNumber: string, message: string): Observable<SendMessageResponse> {
     const metadata = new Metadata();
     metadata.set('x-password', process.env.WHATSAPP_API_PASSWORD || '');
 
-    return this.service.SendMessage({ mobileNumber, text }, metadata);
+    return this.service.sendMessage({ mobileNumber, message }, metadata);
   }
+
 }

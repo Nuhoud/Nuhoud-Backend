@@ -8,7 +8,7 @@ import { AuthController } from './auth/auth.controller';
 import { AuthModule } from './auth/auth.module';
 import { ConfigModule } from '@nestjs/config';
 import { OtpModule } from './otp/otp.module';
-import { EmailModule } from './email/email.module';
+import { EmailsModule } from './emails/email.module';
 import { WhatsappModule } from './whatsapp-grpc/whatsapp.module';
 
 @Module({
@@ -18,7 +18,7 @@ import { WhatsappModule } from './whatsapp-grpc/whatsapp.module';
     ConfigModule.forRoot({isGlobal: true}),
     UsersModule,
     OtpModule,
-    EmailModule,
+    EmailsModule,
     WhatsappModule,
   ],
   controllers: [AppController, AuthController],

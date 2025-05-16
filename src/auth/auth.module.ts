@@ -6,7 +6,7 @@ import { JwtModule } from '@nestjs/jwt';
 import * as dotenv from 'dotenv';
 dotenv.config();
 import { OtpModule } from 'src/otp/otp.module';
-import { EmailModule } from 'src/email/email.module';
+import { EmailsModule } from 'src/emails/email.module';
 import { WhatsappModule } from 'src/whatsapp-grpc/whatsapp.module';
 
 @Module({
@@ -18,7 +18,7 @@ import { WhatsappModule } from 'src/whatsapp-grpc/whatsapp.module';
             signOptions: { expiresIn: '7d' },
           }),
         OtpModule,
-        EmailModule,
+        EmailsModule,
         WhatsappModule,
       ],
     providers: [AuthService],

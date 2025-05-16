@@ -4,7 +4,7 @@ import { UsersService } from 'src/users/users.service';
 import * as bcrypt from 'bcryptjs';
 import { JwtService } from '@nestjs/jwt';
 import { OtpService } from 'src/otp/otp.service';
-import { EmailService } from 'src/email/email.service';
+import { EmailsService } from 'src/emails/email.service';
 import { VerifyOtpDto } from './dto/verify-otp.dto';
 import { ResendOtpDto } from './dto/resend-otp.dto';
 import { WhatsappService } from 'src/whatsapp-grpc/whatsapp.service';
@@ -20,7 +20,7 @@ export class AuthService {
       private usersService: UsersService,
       private jwtService: JwtService,
       private otpService: OtpService,
-      private emailService: EmailService,
+      private emailService: EmailsService,
       private whatsappService: WhatsappService
   ) {}
     
@@ -48,7 +48,18 @@ export class AuthService {
           }
         });
       }else{
-        await this.emailService.sendOtpEmail(signupUser.identifier, otpCode);
+        await this.emailService.sendOTP(signupUser.identifier, otpCode)
+        .subscribe({
+          next: (result) => {
+            console.log('Email message sent successfully:', result);
+          },
+          error: (err) => {
+            console.error('Error sending Email message:', err);
+          },
+          complete: () => {
+            console.log('Email message sending completed');
+          }
+        });
       }
 
       // Create user with isVerified set to false
@@ -138,7 +149,7 @@ export class AuthService {
     if(isMobile){
       await this.whatsappService.sendMessage(identifier, otpCode.toString());
     }else{
-      await this.emailService.sendOtpEmail(identifier, otpCode);
+      await this.emailService.sendOTP(identifier, otpCode);
     }
     
     return {
@@ -168,7 +179,7 @@ export class AuthService {
         `Your password reset code is: ${otpCode}`
       );
     } else {
-      await this.emailService.sendOtpEmail(
+      await this.emailService.sendOTP(
         identifier, 
         otpCode
       );
