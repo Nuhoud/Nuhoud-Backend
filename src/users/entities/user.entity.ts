@@ -64,6 +64,15 @@ export class User {
   })
   @Prop({ default: false })
   isVerified: boolean;
+
+  // if user login for the first time will enter more data like job and educatuin info
+  @ApiProperty({
+    description: 'Whether the user has completed the registration process',
+    example: false,
+    default: false
+  })
+  @Prop({ default: false })
+  isCompleted: boolean;
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);
