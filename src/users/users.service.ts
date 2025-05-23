@@ -33,7 +33,8 @@ export class UsersService {
         ...userData,
         password: hashedPassword,
         role: role,
-        isVerified: isVerified
+        isVerified: isVerified,
+        isCompleted: false
       });
   
       return createdUser.save();

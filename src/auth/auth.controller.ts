@@ -1,12 +1,10 @@
-import { Body, Controller, Get, HttpCode, HttpStatus, Request, Post, UseGuards, Query, ParseBoolPipe } from '@nestjs/common';
+import { Body, Controller, Get, HttpCode, HttpStatus, Post, UseGuards, Query, ParseBoolPipe } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { LoginUserDto } from './dto/login-auth.dto';
 import { AuthGuard } from './guards/auth.guard';
 import { RolesGuard } from './guards/roles/roles.guard'
 import { Public } from 'src/public.decorator';
 import { ApiBearerAuth, ApiBody, ApiCreatedResponse, ApiOkResponse, ApiOperation, ApiTags, ApiResponse } from '@nestjs/swagger';
-import { CreateUserDto } from 'src/users/dto/create-user.dto';
-import { resultUserDto } from './dto/result-atuh.dto';
 import { Role } from './enums/role.enums';
 import { Roles } from './decorators/roles.decorator';
 import { VerifyOtpDto } from './dto/verify-otp.dto';
@@ -126,20 +124,6 @@ export class AuthController {
     @Post('login')
     async Login(@Body() LoginUser: LoginUserDto, @Query('isMobile', ParseBoolPipe) isMobile: boolean = false) {
       return this.authService.login(LoginUser,isMobile);
-    }
-
-
-
-    // getr the profile info
-    @ApiOperation({ summary: 'Get user profile' })
-    @ApiOkResponse({
-        description: 'Returns the user profile',
-    })
-    @ApiResponse({ status: 401, description: 'Unauthorized' })
-    @UseGuards(AuthGuard)
-    @Get('profile')
-    async getProfile(@Request() req: Request) {
-      return req['user'];
     }
 
 }

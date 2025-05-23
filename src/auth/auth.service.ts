@@ -80,7 +80,7 @@ export class AuthService {
     return this.usersService.create(signupUser, true, 'admin', isMobile);
   }
 
-  async login(loginUser: LoginUserDto,isMobile: boolean): Promise<string> {
+  async login(loginUser: LoginUserDto,isMobile: boolean) {
     try{
       const user = await this.usersService.findByIdentifier(loginUser.identifier,isMobile)
     
@@ -100,7 +100,10 @@ export class AuthService {
   
       const payload = { _id: user._id, name:user.name, identifier: isMobile? user.mobile : user.email, role: user.role };
       const token = await this.jwtService.signAsync(payload);
-      return token;
+      return {
+        token,
+        isCompleted: user.isCompleted
+      };
     }catch(error){
       throw error;
     }

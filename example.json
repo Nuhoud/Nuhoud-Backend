@@ -1,146 +1,93 @@
+
 {
-    "id": "user_19384fba",
-    "firstName": "Alex",
-    "lastName": "Morgan",
-    "headline": "Software Engineer III at Meta (Facebook) | Backend Specialist | AI Enthusiast",
-    "location": {
-      "country": "United States",
-      "city": "Menlo Park, CA"
+  "_id": "663b1f3e4c2a2e5d6a7b8c9d",
+  "name": "Naorz Kall",
+  "email": "ahmad.khaled@example.com",
+  "mobile": "963944123456",
+  "password": "encrypted_password_here",
+  "role": "user",
+  "isVerified": true,
+  "isCompleted": true,
+  "gender": "male",
+  "dateOfBirth": "1995-04-15",
+  "location": {
+    "country": "Damascus",
+    "city": "Alkeswa"
+  },
+  "languages": [
+    { "name": "Arabic", "level": "Native" },
+    { "name": "English", "level": "Intermediate" },
+    { "name": "German", "level": "Beginner" }
+  ],
+  "education": [
+    {
+      "degree": "Bachelor's Degree",
+      "field": "Computer Science",
+      "university": "Yarmok Private University",
+      "startYear": 2021,
+      "endYear": 2026,
+      "GPA": 3.5
+    }
+  ],
+  "experience": [
+    {
+      "jobTitle": "Backend Developer",
+      "company": "Tech Solutions GmbH",
+      "location": "Berlin, Germany",
+      "startDate": "2022-01-01",
+      "endDate": "2023-06-30",
+      "description": "Developed RESTful APIs and integrated MongoDB using Node.js and Express."
     },
-    "contactInfo": {
-      "email": "alex.morgan@example.com",
-      "phone": "+1-650-123-4567",
-      "linkedinUrl": "https://www.linkedin.com/in/alexmorgan",
-      "githubUrl": "https://github.com/alexmorgancode",
-      "website": "https://alexm.dev"
+    {
+      "jobTitle": "Intern Developer",
+      "company": "Syrian IT Center",
+      "location": "Aleppo, Syria",
+      "startDate": "2020-06-01",
+      "endDate": "2020-12-30",
+      "description": "Worked on small scripts and automation tools in Python."
+    }
+  ],
+  "certifications": [
+    {
+      "name": "AWS Certified Cloud Practitioner",
+      "issuer": "Amazon",
+      "issueDate": "2023-01-15"
     },
-    "summary": "Results-driven Software Engineer III at Meta with 7+ years of experience designing scalable backend systems, leading cross-functional teams, and mentoring junior developers. Passionate about distributed systems, GraphQL APIs, and AI integration in enterprise software.",
-    "experiences": [
-      {
-        "title": "Software Engineer III",
-        "company": "Meta (Facebook)",
-        "location": "Menlo Park, CA",
-        "type": "Full-time",
-        "startDate": "2021-07",
-        "endDate": null,
-        "description": "Leading the backend development for Facebook Marketplace using Hack and GraphQL. Worked on search optimization, real-time data syncing using Apache Kafka, and onboarding flows for new sellers. Collaborated with AI team to detect scam listings with 96% accuracy."
-      },
-      {
-        "title": "Software Engineer II",
-        "company": "Airbnb",
-        "location": "San Francisco, CA",
-        "type": "Full-time",
-        "startDate": "2018-08",
-        "endDate": "2021-06",
-        "description": "Developed and scaled the property listing backend microservices using Node.js and Kubernetes. Worked on payment gateway integration and led a team of 3 engineers in launching a successful host metrics dashboard."
-      },
-      {
-        "title": "Software Engineer I",
-        "company": "Intuit",
-        "location": "Mountain View, CA",
-        "type": "Full-time",
-        "startDate": "2016-06",
-        "endDate": "2018-07",
-        "description": "Built REST APIs in Java Spring Boot for QuickBooks Online. Focused on customer authentication, session caching, and billing. Improved service response time by 30% after major refactor."
-      }
+    {
+      "name": "IELTS",
+      "issuer": "British Council",
+      "issueDate": "2022-03-10"
+    }
+  ],
+  "skills": {
+    "technical_skills": [
+      { "name": "Node.js", "level": 85 },
+      { "name": "Express.js", "level": 80 },
+      { "name": "MongoDB", "level": 75 },
+      { "name": "Docker", "level": 70 },
+      { "name": "Git", "level": 90 }
     ],
-    "education": [
-      {
-        "school": "University of California, Berkeley",
-        "degree": "Bachelor of Science",
-        "fieldOfStudy": "Computer Science",
-        "startDate": "2012-09",
-        "endDate": "2016-06",
-        "description": "Graduated with honors. Member of ACM chapter. Final year project: Distributed Chat Application over P2P networks using WebRTC."
-      }
-    ],
-    "skills": [
-      "Java",
-      "Node.js",
-      "Python",
-      "GraphQL",
-      "Distributed Systems",
-      "Microservices Architecture",
-      "Docker",
-      "Kubernetes",
-      "CI/CD",
-      "Machine Learning",
-      "RESTful APIs",
-      "Kafka",
-      "AWS",
-      "PostgreSQL",
-      "MongoDB"
-    ],
-    "certifications": [
-      {
-        "name": "AWS Certified Solutions Architect – Associate",
-        "issuer": "Amazon Web Services",
-        "date": "2020-04"
-      },
-      {
-        "name": "Machine Learning",
-        "issuer": "Coursera - Andrew Ng",
-        "date": "2019-09"
-      }
-    ],
-    "projects": [
-      {
-        "name": "Scalable Chat App",
-        "description": "Built a horizontally scalable chat system using Node.js, Redis pub/sub, and WebSockets. Deployed on AWS ECS with auto-scaling and monitoring via Prometheus.",
-        "url": "https://github.com/alexmorgancode/scalable-chat-app",
-        "technologies": ["Node.js", "Redis", "WebSocket", "Docker", "AWS"]
-      },
-      {
-        "name": "Resume Parser AI",
-        "description": "A machine learning project that parses resumes and ranks candidates based on job requirements. Used spaCy, scikit-learn, and React.",
-        "url": "https://alexm.dev/projects/resume-parser",
-        "technologies": ["Python", "spaCy", "React", "Flask"]
-      }
-    ],
-    "languages": [
-      {
-        "language": "English",
-        "proficiency": "Native"
-      },
-      {
-        "language": "Spanish",
-        "proficiency": "Professional working proficiency"
-      }
-    ],
-    "volunteerExperience": [
-      {
-        "role": "Mentor",
-        "organization": "Women Who Code",
-        "startDate": "2020-03",
-        "endDate": null,
-        "description": "Mentoring junior engineers and students on backend development and career advice."
-      },
-      {
-        "role": "Judge",
-        "organization": "HackMIT",
-        "startDate": "2022-09",
-        "endDate": "2022-09",
-        "description": "Served as a judge evaluating over 50 AI and backend projects."
-      }
-    ],
-    "honorsAndAwards": [
-      {
-        "title": "Meta Engineering Excellence Award",
-        "date": "2023-04",
-        "description": "Awarded for designing a high-performance caching layer that reduced data retrieval latency by 40% across Facebook Marketplace."
-      },
-      {
-        "title": "Airbnb Impact Award",
-        "date": "2020-11",
-        "description": "Recognized for leading the launch of a new analytics dashboard for hosts with high adoption and positive user feedback."
-      }
-    ],
-    "interests": [
-      "AI Ethics",
-      "Open Source Software",
-      "Tech for Good",
-      "Cloud Architecture",
-      "Entrepreneurship"
+    "soft_skills": [
+      { "name": "Teamwork", "level": 90 },
+      { "name": "Problem Solving", "level": 85 },
+      { "name": "Communication", "level": 80 },
+      { "name": "Adaptability", "level": 75 }
     ]
-  }
-  
+  },
+  "jobPreferences": {
+    "workPlaceType": "Remote",
+    "jobType": "Full-Time",
+    "jobLocation": "Germany"
+  },
+  "interests": [
+    "AI Ethics",
+    "Open Source Software",
+    "Tech for Good",
+    "Cloud Architecture",
+    "Entrepreneurship"
+  ],
+
+  "createdAt": "2025-03-10T08:00:00.000Z",
+  "updatedAt": "2025-05-22T10:15:30.123Z"
+}
+

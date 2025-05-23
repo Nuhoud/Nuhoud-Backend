@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, HttpStatus, HttpCode } from '@nestjs/common';
+import { Controller, Get, Request, Body, Patch, Param, Delete, HttpStatus, HttpCode } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
@@ -8,7 +8,6 @@ import { ApiBearerAuth, ApiBody, ApiCreatedResponse, ApiOkResponse, ApiOperation
 import { Roles } from 'src/auth/decorators/roles.decorator';
 import { Role } from 'src/auth/enums/role.enums';
 import { UseGuards } from '@nestjs/common';
-// import { AuthGuard } from 'src/auth/guards/auth.guard';
 import { RolesGuard } from 'src/auth/guards/roles/roles.guard';
 
 @ApiTags('Users')
@@ -17,10 +16,6 @@ import { RolesGuard } from 'src/auth/guards/roles/roles.guard';
 export class UsersController {
 
   constructor(private readonly usersService: UsersService) {}
-
-
-
-
 
   // get all users
   @ApiOkResponse({ 
@@ -70,5 +65,16 @@ export class UsersController {
   @HttpCode(HttpStatus.NO_CONTENT)
   async remove(@Param('id') id: string): Promise<void> {
     return this.usersService.remove(id);
+  }
+
+  // getr the profile info
+  @ApiOperation({ summary: 'Get user profile' })
+  @ApiOkResponse({
+      description: 'Returns the user profile',
+  })
+  @ApiResponse({ status: 401, description: 'Unauthorized' })
+  @Get('profile')
+  async getProfile(@Request() req: Request) {
+    return req['user'];
   }
 }
