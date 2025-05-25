@@ -34,7 +34,7 @@ export class UsersService {
         password: hashedPassword,
         role: role,
         isVerified: isVerified,
-        isCompleted: false
+        isFirstTime: role==="user"? true:false
       });
   
       return createdUser.save();
@@ -58,6 +58,7 @@ export class UsersService {
 
   async findOne(id: string): Promise<User> {
     try {
+      console.log(id);
       const user = await this.userModel.findById(id).exec();
       
       if (!user) {

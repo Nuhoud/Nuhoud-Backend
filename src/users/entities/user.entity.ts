@@ -18,7 +18,7 @@ export class Education {
   university: string;
 
   @Prop({ required: true })
-  startYear: number;
+  startYear?: number;
 
   @Prop()
   endYear?: number;
@@ -35,11 +35,11 @@ export class Experience {
   @Prop({ required: true })
   company: string;
 
-  @Prop({ required: true })
-  location: string;
+  @Prop({ required: false })
+  location?: string;
 
-  @Prop({ required: true })
-  startDate: Date;
+  @Prop()
+  startDate?: Date;
 
   @Prop()
   endDate?: Date;
@@ -90,6 +90,29 @@ export class JobPreferences {
   jobLocation: string;
 }
 
+@Schema({ _id: false })
+export class Basic {
+  @Prop({ enum: ['male', 'female'] })
+  gender?: string;
+
+  @Prop()
+  dateOfBirth?: Date;
+
+  @Prop()
+  location?: string;
+
+  @Prop({ type: [String], default: [] })
+  languages: string[];
+}
+
+@Schema({_id:false})
+export class Goals {
+  @Prop({ required: true })
+  careerGoal: string;
+
+  @Prop({ type: [String], default: [] })
+  interests: string[];
+}
 
 
 // ------------------------------ the User scheam ------------------------------
@@ -123,27 +146,15 @@ export class User {
   isCompleted: boolean;
 
   // Profile fields - Basic Info
-  @Prop({ enum: ['male', 'female'] })
-  gender?: string;
-
-  @Prop()
-  dateOfBirth?: Date;
-
-  @Prop()
-  location?: string;
-
-  @Prop({ type: [String], default: [] })
-  languages: string[];
-
-
-
+  @Prop({ type: Basic })
+  basic:Basic;
 
   // Profile fields - Professional Info (Embedded Documents)
   @Prop({ type: [Education], default: [] })
   education: Education[];
 
   @Prop({ type: [Experience], default: [] })
-  Experience: Experience[];
+  experience: Experience[];
 
   @Prop({ type: [Certification], default: [] })
   certifications: Certification[];
@@ -155,56 +166,8 @@ export class User {
   @Prop({ type: JobPreferences })
   jobPreferences?: JobPreferences;
 
-  @Prop()
-  careerGoal?: string;
-
-  @Prop({ type: [String], default: [] })
-  interests: string[];
-
-
-
-  // Profile completion tracking
-  @Prop({
-    type: {
-      basicInfo: { type: Boolean, default: false },
-      education: { type: Boolean, default: false },
-      experience: { type: Boolean, default: false },
-      certifications: { type: Boolean, default: false },
-      preferences: { type: Boolean, default: false },
-      goals: { type: Boolean, default: false },
-      skills: { type: Boolean, default: false }
-    },
-    default: {
-      basicInfo: false,
-      education: false,
-      experience: false,
-      certifications: false,
-      preferences: false,
-      goals: false,
-      skills: false
-    }
-  })
-  profileCompletion: {
-    basicInfo: boolean;
-    education: boolean;
-    experience: boolean;
-    certifications: boolean;
-    preferences: boolean;
-    goals: boolean;
-    skills: boolean;
-  };
-
-  // Helper method to check if profile is complete
-  isProfileComplete(): boolean {
-    return Object.values(this.profileCompletion).every(step => step === true);
-  }
-
-  // Helper method to get completion percentage
-  getCompletionPercentage(): number {
-    const steps = Object.values(this.profileCompletion);
-    const completedSteps = steps.filter(step => step === true).length;
-    return Math.round((completedSteps / steps.length) * 100);
-  }
+  @Prop({ type: Goals })
+  goals?:Goals;
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);
@@ -215,27 +178,6 @@ UserSchema.index({ email: 1 });
 UserSchema.index({ mobile: 1 });
 UserSchema.index({ 'jobPreferences.jobLocation': 1 });
 UserSchema.index({ 'skills.technical_skills.name': 1 });
-
-// Pre-save middleware to update profile completion
-
-UserSchema.pre('save', function(next) {
-  if (this.isModified()) {
-    const completion = this.profileCompletion;
-    
-    // Update completion status for each section
-    completion.basicInfo = !!(this.gender && this.dateOfBirth && this.location && this.languages.length > 0);
-    completion.education = this.education.length > 0;
-    completion.experience = this.Experience.length > 0;
-    completion.certifications = this.certifications.length > 0;
-    completion.preferences = !!(this.jobPreferences?.workPlaceType && this.jobPreferences?.jobType);
-    completion.goals = !!(this.careerGoal && this.interests.length > 0);
-    completion.skills = !!(((this.skills?.technical_skills?.length ?? 0) > 0) || ((this.skills?.soft_skills?.length ?? 0) > 0));
-
-    // Update isCompleted based on profile completion
-    this.isCompleted = this.isProfileComplete();
-  }
-  next();
-});
 
 UserSchema.set('toJSON', {
   transform: (doc, ret) => {

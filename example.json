@@ -1,24 +1,12 @@
 
 {
-  "_id": "663b1f3e4c2a2e5d6a7b8c9d",
-  "name": "Naorz Kall",
-  "email": "ahmad.khaled@example.com",
-  "mobile": "963944123456",
-  "password": "encrypted_password_here",
-  "role": "user",
-  "isVerified": true,
-  "isCompleted": true,
-  "gender": "male",
-  "dateOfBirth": "1995-04-15",
-  "location": {
-    "country": "Damascus",
-    "city": "Alkeswa"
+  "basicInfo":{
+      "gender": "male",
+      "dateOfBirth": "1995-03-12",
+      "location": "Gaziantep, Turkey",
+      "languages": ["Arabic", "English", "Turkish"]
   },
-  "languages": [
-    { "name": "Arabic", "level": "Native" },
-    { "name": "English", "level": "Intermediate" },
-    { "name": "German", "level": "Beginner" }
-  ],
+
   "education": [
     {
       "degree": "Bachelor's Degree",
@@ -29,6 +17,7 @@
       "GPA": 3.5
     }
   ],
+
   "experience": [
     {
       "jobTitle": "Backend Developer",
@@ -47,6 +36,7 @@
       "description": "Worked on small scripts and automation tools in Python."
     }
   ],
+
   "certifications": [
     {
       "name": "AWS Certified Cloud Practitioner",
@@ -59,35 +49,21 @@
       "issueDate": "2022-03-10"
     }
   ],
-  "skills": {
-    "technical_skills": [
-      { "name": "Node.js", "level": 85 },
-      { "name": "Express.js", "level": 80 },
-      { "name": "MongoDB", "level": 75 },
-      { "name": "Docker", "level": 70 },
-      { "name": "Git", "level": 90 }
-    ],
-    "soft_skills": [
-      { "name": "Teamwork", "level": 90 },
-      { "name": "Problem Solving", "level": 85 },
-      { "name": "Communication", "level": 80 },
-      { "name": "Adaptability", "level": 75 }
-    ]
-  },
+
   "jobPreferences": {
     "workPlaceType": "Remote",
     "jobType": "Full-Time",
     "jobLocation": "Germany"
   },
-  "interests": [
-    "AI Ethics",
-    "Open Source Software",
-    "Tech for Good",
-    "Cloud Architecture",
-    "Entrepreneurship"
-  ],
 
-  "createdAt": "2025-03-10T08:00:00.000Z",
-  "updatedAt": "2025-05-22T10:15:30.123Z"
+  "goals":{
+    "careerGoal":"tetetet",
+    "interests": [
+      "AI Ethics",
+      "Open Source Software",
+      "Tech for Good",
+      "Cloud Architecture",
+      "Entrepreneurship"
+    ]
+  }
 }
-

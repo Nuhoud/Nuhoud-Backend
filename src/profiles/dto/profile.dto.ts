@@ -14,7 +14,7 @@ import {
 import { Type } from 'class-transformer';
 import { ApiProperty } from '@nestjs/swagger';
 
-// Step 1: Basic Info DTO
+// Basic Info DTO
 export class BasicInfoDto {
   @ApiProperty({ 
     enum: ['male', 'female'],
@@ -47,7 +47,7 @@ export class BasicInfoDto {
   languages: string[];
 }
 
-// Step 2: Education DTO
+// Education DTO
 export class EducationDto {
   @ApiProperty({ 
     example: "Bachelor's Degree"
@@ -98,7 +98,7 @@ export class EducationDto {
 }
 
 
-// Step 3: Work Experience DTO
+// Work Experience DTO
 export class ExperienceDto {
   @ApiProperty({ 
     example: 'Backend Developer'
@@ -115,18 +115,12 @@ export class ExperienceDto {
   company: string;
 
   @ApiProperty({ 
-    example: 'Berlin, Germany'
-  })
-  @IsString()
-  @Length(2, 100)
-  location: string;
-
-  @ApiProperty({ 
     example: '2022-01-01',
     description: 'Start date in YYYY-MM-DD format'
   })
+  @IsOptional()
   @IsDateString()
-  startDate: string;
+  startDate?: string;
 
   @ApiProperty({ 
     example: '2023-06-30',
@@ -148,7 +142,7 @@ export class ExperienceDto {
 }
 
 
-// Step 4: Certifications DTO
+// Certifications DTO
 export class CertificationDto {
   @ApiProperty({ 
     example: 'AWS Certified Cloud Practitioner'
@@ -172,7 +166,7 @@ export class CertificationDto {
   issueDate: string;
 }
 
-// Step 5: Job Preferences DTO
+// Job Preferences DTO
 export class JobPreferencesDto {
   @ApiProperty({ 
     enum: ['Remote', 'On-site'],
@@ -197,7 +191,7 @@ export class JobPreferencesDto {
 }
 
 
-// Step 6: Career Goals DTO
+// Career Goals DTO
 export class GoalsDto {
   @ApiProperty({ 
     example: 'To become a senior AI engineer specializing in NLP and infrastructure automation.'
@@ -216,7 +210,50 @@ export class GoalsDto {
   interests: string[];
 }
 
-// Step 7: Skills DTO
+
+// step 1 : Basic Info + Educatio + Work Experience + Certifications + Job Preferences + Career Goals
+export class StepOneDto {
+
+  @ApiProperty({ type: BasicInfoDto })
+  @ValidateNested()
+  @Type(() => BasicInfoDto)
+  basicInfo: BasicInfoDto;
+
+  @ApiProperty({ type: [EducationDto] })
+  @ValidateNested({ each: true })
+  @Type(() => EducationDto)
+  @IsArray()
+  education: EducationDto[];
+
+  @ApiProperty({ type: [ExperienceDto], required: false })
+  @ValidateNested({ each: true })
+  @Type(() => ExperienceDto)
+  @IsArray()
+  @IsOptional()
+  experience: ExperienceDto[];
+
+  @ApiProperty({ type: [CertificationDto], required: false })
+  @ValidateNested({ each: true })
+  @Type(() => CertificationDto)
+  @IsArray()
+  @IsOptional()
+  certifications: CertificationDto[];
+
+  @ApiProperty({ type: JobPreferencesDto, required: false })
+  @ValidateNested()
+  @Type(() => JobPreferencesDto)
+  @IsOptional()
+  jobPreferences?: JobPreferencesDto;
+
+  @ApiProperty({ type: GoalsDto, required: false })
+  @ValidateNested()
+  @Type(() => GoalsDto)
+  goals: GoalsDto;
+}
+
+
+
+// Skills DTO
 export class SkillDto {
   @ApiProperty({ 
     example: 'Node.js'
@@ -257,40 +294,7 @@ export class SkillsDto {
   soft_skills: SkillDto[];
 }
 
-// Response DTOs
-export class ProfileCompletionDto {
-  @ApiProperty()
-  basicInfo: boolean;
 
-  @ApiProperty()
-  education: boolean;
-
-  @ApiProperty()
-  experience: boolean;
-
-  @ApiProperty()
-  certifications: boolean;
-
-  @ApiProperty()
-  preferences: boolean;
-
-  @ApiProperty()
-  goals: boolean;
-
-  @ApiProperty()
-  skills: boolean;
-}
-
-export class ProfileStatusDto {
-  @ApiProperty()
-  isCompleted: boolean;
-
-  @ApiProperty()
-  completionPercentage: number;
-
-  @ApiProperty({ type: ProfileCompletionDto })
-  profileCompletion: ProfileCompletionDto;
-}
 
 // Combined response DTO for user profile
 export class UserProfileResponseDto {
@@ -312,9 +316,6 @@ export class UserProfileResponseDto {
   @ApiProperty()
   isVerified: boolean;
 
-  @ApiProperty()
-  isCompleted: boolean;
-
   @ApiProperty({ required: false })
   gender?: string;
 
@@ -331,7 +332,7 @@ export class UserProfileResponseDto {
   education: EducationDto[];
 
   @ApiProperty({ type: [ExperienceDto] })
-  workExperience: ExperienceDto[];
+  Experience: ExperienceDto[];
 
   @ApiProperty({ type: [CertificationDto] })
   certifications: CertificationDto[];
@@ -347,9 +348,6 @@ export class UserProfileResponseDto {
 
   @ApiProperty()
   interests: string[];
-
-  @ApiProperty({ type: ProfileStatusDto })
-  profileStatus: ProfileStatusDto;
 
   @ApiProperty()
   createdAt: Date;

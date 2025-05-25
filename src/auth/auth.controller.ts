@@ -1,4 +1,4 @@
-import { Body, Controller, Get, HttpCode, HttpStatus, Post, UseGuards, Query, ParseBoolPipe } from '@nestjs/common';
+import { Body, Controller, Get, HttpCode,Request, HttpStatus, Post, UseGuards, Query, ParseBoolPipe } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { LoginUserDto } from './dto/login-auth.dto';
 import { AuthGuard } from './guards/auth.guard';
@@ -125,5 +125,7 @@ export class AuthController {
     async Login(@Body() LoginUser: LoginUserDto, @Query('isMobile', ParseBoolPipe) isMobile: boolean = false) {
       return this.authService.login(LoginUser,isMobile);
     }
+
+
 
 }

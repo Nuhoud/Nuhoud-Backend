@@ -31,6 +31,18 @@ export class UsersController {
   }
 
 
+  // get user profile
+  @ApiOkResponse({ 
+    description: 'Returns a user profile',
+    type: CreateUserDto
+  })
+  @ApiResponse({ status: 404, description: 'User not found' })
+  @Get('profile')
+  async getProfile(@Request() req: Request): Promise<User> {
+    console.log(req)
+    return this.usersService.findOne(req['user']._id);
+  }
+
   // get user by id
   @ApiParam({ name: 'id', description: 'User ID', type: 'string' })
   @ApiOkResponse({ 
@@ -39,7 +51,8 @@ export class UsersController {
   })
   @ApiResponse({ status: 404, description: 'User not found' })
   @Get(':id')
-  async findOne(@Param('id') id: string): Promise<User> {
+  async findOne(@Param('id') id: string,@Request() req: Request): Promise<User> {
+    //console.log(req)
     return this.usersService.findOne(id);
   }
 
@@ -65,16 +78,5 @@ export class UsersController {
   @HttpCode(HttpStatus.NO_CONTENT)
   async remove(@Param('id') id: string): Promise<void> {
     return this.usersService.remove(id);
-  }
-
-  // getr the profile info
-  @ApiOperation({ summary: 'Get user profile' })
-  @ApiOkResponse({
-      description: 'Returns the user profile',
-  })
-  @ApiResponse({ status: 401, description: 'Unauthorized' })
-  @Get('profile')
-  async getProfile(@Request() req: Request) {
-    return req['user'];
   }
 }
