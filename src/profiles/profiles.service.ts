@@ -16,6 +16,7 @@ export class ProfilesService {
 
     async addProfileInfoStepOne(userId: string, stepOneInfo: StepOneDto){
         try{
+            
             let user = await this.userModel.findById(userId).exec();
             if(!user){
                 throw new NotFoundException(`User with ID ${userId} not found`);
