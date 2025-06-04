@@ -11,6 +11,7 @@ import { OtpModule } from './otp/otp.module';
 import { EmailsModule } from './emails/email.module';
 import { WhatsappModule } from './whatsapp-grpc/whatsapp.module';
 import { ProfilesModule } from './profiles/profiles.module';
+import { AiserviceModule } from './aiservice/aiservice.module';
 
 @Module({
   imports: [
@@ -22,6 +23,7 @@ import { ProfilesModule } from './profiles/profiles.module';
     EmailsModule,
     WhatsappModule,
     ProfilesModule,
+    AiserviceModule,
   ],
   controllers: [AppController, AuthController],
   providers: [AppService, AuthService],

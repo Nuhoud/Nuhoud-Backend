@@ -2,7 +2,8 @@ import { Injectable, NotFoundException, BadRequestException, Logger, InternalSer
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
 import { Basic, User, UserDocument } from '../users/entities/user.entity';
-import { StepOneDto } from './dto/profile.dto'
+import { SkillsDto, StepOneDto } from './dto/profile.dto'
+import { AiserviceService } from '../aiservice/aiservice.service';
 
 
 @Injectable()
@@ -10,9 +11,10 @@ export class ProfilesService {
 
     constructor(
         @InjectModel(User.name) private userModel: Model<UserDocument>,
+        private aiService: AiserviceService,
     ){}
 
-    async addProfileInfoStepOne(userId: Types.ObjectId, stepOneInfo: StepOneDto){
+    async addProfileInfoStepOne(userId: string, stepOneInfo: StepOneDto){
         try{
             let user = await this.userModel.findById(userId).exec();
             if(!user){
@@ -44,8 +46,9 @@ export class ProfilesService {
             user.jobPreferences = stepOneInfo.jobPreferences;
             user.goals = stepOneInfo.goals;
 
-            return await user.save();
-            
+            await user.save();
+            return await this.aiService.getRecomandedSkills(stepOneInfo);
+                        
         }catch(error){
             if(error.name === 'CastError'){
                 throw new BadRequestException('Invalid user ID format');
@@ -54,7 +57,18 @@ export class ProfilesService {
         }
     }
 
-    
+    async addProfileInfoStepTwo(userId: string, stepTwoInfo: SkillsDto){
+        try{
+            let user = await this.userModel.findById(userId).exec();
+            if(!user){
+                throw new NotFoundException(`User with ID ${userId} not found`);
+            }
+            user.skills = stepTwoInfo;
+
+        }catch{
+
+        }
+    }
   
 
 }

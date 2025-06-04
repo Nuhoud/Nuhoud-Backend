@@ -252,6 +252,16 @@ export class StepOneDto {
 }
 
 
+// ------------------------------step2
+export class SkillsRecommendationDto {
+  @ApiProperty({ 
+    example: ['React', 'Docker', 'AWS Lambda', 'GraphQL', 'TypeScript'],
+    description: 'Array of recommended technical skills'
+  })
+  @IsArray()
+  @IsString({ each: true })
+  recommendedSkills: string[];
+}
 
 // Skills DTO
 export class SkillDto {
