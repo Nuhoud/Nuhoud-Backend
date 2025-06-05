@@ -17,10 +17,10 @@ import { ApiProperty } from '@nestjs/swagger';
 // Basic Info DTO
 export class BasicInfoDto {
   @ApiProperty({ 
-    enum: ['male', 'female'],
-    example: 'male'
+    enum: ['ذكر', 'أنثى'],
+    example: 'ذكر'
   })
-  @IsEnum(['male', 'female'])
+  @IsEnum(['ذكر', 'أنثى'])
   gender: string;
 
   @ApiProperty({ 
@@ -169,17 +169,17 @@ export class CertificationDto {
 // Job Preferences DTO
 export class JobPreferencesDto {
   @ApiProperty({ 
-    enum: ['Remote', 'On-site'],
-    example: 'Remote'
+    enum: ['عن بعد', 'في الشركة'],
+    example: 'عن بعد'
   })
-  @IsEnum(['Remote', 'On-site'])
+  @IsEnum(['عن بعد', 'في الشركة'])
   workPlaceType: string;
 
   @ApiProperty({ 
-    enum: ['Full-Time', 'Part-Time', 'Contract', 'Freelance', 'Internship'],
-    example: 'Full-Time'
+    enum: ['دوام كامل', 'دوام جزئي', 'عقد', 'مستقل', 'تدريب'],
+    example: 'دوام كامل'
   })
-  @IsEnum(['Full-Time', 'Part-Time', 'Contract', 'Freelance', 'Internship'])
+  @IsEnum(['دوام كامل', 'دوام جزئي', 'عقد', 'مستقل', 'تدريب'])
   jobType: string;
 
   @ApiProperty({ 

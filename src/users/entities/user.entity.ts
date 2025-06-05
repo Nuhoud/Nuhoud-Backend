@@ -80,10 +80,10 @@ export class Skills {
 
 @Schema({ _id: false })
 export class JobPreferences {
-  @Prop({ enum: ['Remote', 'On-site'], required: true })
+  @Prop({ enum: ['عن بعد', 'في الشركة','مزيج'], required: true })
   workPlaceType: string;
 
-  @Prop({ enum: ['Full-Time', 'Part-Time', 'Contract', 'Freelance', 'Internship'], required: true })
+  @Prop({ enum: ['دوام كامل', 'دوام جزئي', 'عقد', 'مستقل', 'تدريب'], required: true })
   jobType: string;
 
   @Prop({ required: true })
@@ -92,7 +92,7 @@ export class JobPreferences {
 
 @Schema({ _id: false })
 export class Basic {
-  @Prop({ enum: ['male', 'female'] })
+  @Prop({ enum: ['ذكر', 'أنثى'] })
   gender?: string;
 
   @Prop()
