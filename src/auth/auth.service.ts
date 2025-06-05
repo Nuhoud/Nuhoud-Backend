@@ -8,7 +8,7 @@ import { EmailsService } from 'src/emails/email.service';
 import { VerifyOtpDto } from './dto/verify-otp.dto';
 import { ResendOtpDto } from './dto/resend-otp.dto';
 import { WhatsappService } from 'src/whatsapp-grpc/whatsapp.service';
-import { SignupDto } from './dto/signup-auth.dto';
+import { SignupDto, SignupEmployerDto } from './dto/signup-auth.dto';
 import {ResetPasswordDto} from './dto/resetPassword-auth.dto'
 import { identity } from 'rxjs';
 import { text } from 'stream/consumers';
@@ -78,6 +78,10 @@ export class AuthService {
   
   async signupAdmin(signupUser: SignupDto, isMobile: boolean) {
     return this.usersService.create(signupUser, true, 'admin', isMobile);
+  }
+
+  async signupEmployer(signupEmployerUser: SignupEmployerDto, isMobile: boolean) {
+    return this.usersService.create(signupEmployerUser, true, 'employer', isMobile);
   }
 
   async login(loginUser: LoginUserDto,isMobile: boolean) {

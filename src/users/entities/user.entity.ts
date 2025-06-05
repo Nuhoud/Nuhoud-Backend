@@ -114,6 +114,29 @@ export class Goals {
   interests: string[];
 }
 
+@Schema({ _id: false })
+export class Company {
+  @Prop({ required: true })
+  name: string;
+
+  @Prop({ required: true })
+  industry: string;
+
+  @Prop()
+  website?: string;
+
+  @Prop()
+  description?: string;
+
+  @Prop()
+  location?: string;
+
+  @Prop({ 
+    enum: ['1-10', '11-50', '51-200', '201-500', '501-1000', '1000+'],
+    required: true 
+  })
+  size: string;
+}
 
 // ------------------------------ the User scheam ------------------------------
 @Schema({ timestamps: true })
@@ -133,8 +156,8 @@ export class User {
   @Prop({ required: true })
   password: string;
 
-  @Prop({ required: true, enum: ['admin', 'user'], default: 'user' })
-  role: 'admin' | 'user';
+  @Prop({ required: true, enum: ['admin', 'user','employer'], default: 'user' })
+  role: 'admin' | 'user' | 'employer';
 
   @Prop({ default: false })
   isVerified: boolean;
@@ -168,6 +191,10 @@ export class User {
 
   @Prop({ type: Goals })
   goals?:Goals;
+
+  // Company field for employers only
+  @Prop({ type: Company })
+  company?: Company;
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);

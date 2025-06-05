@@ -47,8 +47,8 @@ export class ProfilesService {
             user.jobPreferences = stepOneInfo.jobPreferences;
             user.goals = stepOneInfo.goals;
 
-            await user.save();
-            return await this.aiService.getRecomandedSkills(stepOneInfo);
+            return await user.save();
+            //return await this.aiService.getRecomandedSkills(stepOneInfo);
                         
         }catch(error){
             if(error.name === 'CastError'){
@@ -66,8 +66,13 @@ export class ProfilesService {
             }
             user.skills = stepTwoInfo;
 
-        }catch{
+            return await user.save();
 
+        }catch(error){
+            if(error.name === 'CastError'){
+                throw new BadRequestException('Invalid user ID format');
+            }
+            throw new InternalServerErrorException('Failed to add step two info');
         }
     }
   

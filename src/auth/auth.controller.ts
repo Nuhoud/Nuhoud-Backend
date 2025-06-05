@@ -3,13 +3,13 @@ import { AuthService } from './auth.service';
 import { LoginUserDto } from './dto/login-auth.dto';
 import { AuthGuard } from './guards/auth.guard';
 import { RolesGuard } from './guards/roles/roles.guard'
-import { Public } from 'src/public.decorator';
+import { Public } from '../public.decorator';
 import { ApiBearerAuth, ApiBody, ApiCreatedResponse, ApiOkResponse, ApiOperation, ApiTags, ApiResponse } from '@nestjs/swagger';
 import { Role } from './enums/role.enums';
 import { Roles } from './decorators/roles.decorator';
 import { VerifyOtpDto } from './dto/verify-otp.dto';
 import { ResendOtpDto } from './dto/resend-otp.dto';
-import { SignupDto } from './dto/signup-auth.dto';
+import { SignupDto,SignupEmployerDto } from './dto/signup-auth.dto';
 import { ResetPasswordDto } from './dto/resetPassword-auth.dto';
 import { RequestResetPasswordDto } from './dto/requestResetPassword-auth.dto';
 
@@ -109,6 +109,14 @@ export class AuthController {
     @Post('signup-admin')
     async SignupAdmin(@Body() signupUser: SignupDto) {
         return this.authService.signupAdmin(signupUser, false);
+    }
+
+    //signup employer
+    @Roles(Role.ADMIN)
+    @UseGuards(AuthGuard, RolesGuard)
+    @Post('signup-employer')
+    async SignupEmployer(@Body() signupEmployerUser: SignupEmployerDto) {
+        return this.authService.signupEmployer(signupEmployerUser, false);
     }
 
 

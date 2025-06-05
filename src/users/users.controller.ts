@@ -39,7 +39,7 @@ export class UsersController {
   @ApiResponse({ status: 404, description: 'User not found' })
   @Get('profile')
   async getProfile(@Request() req: Request): Promise<User> {
-    console.log(req)
+    //console.log(req)
     return this.usersService.findOne(req['user']._id);
   }
 
