@@ -17,6 +17,7 @@ import { AiserviceModule } from './aiservice/aiservice.module';
   imports: [
     MongooseModule.forRoot('mongodb://localhost:27017/nuhoud'),
     AuthModule,
+    // Load environment variables from the `.env` file and make ConfigService globally available across the entire application
     ConfigModule.forRoot({isGlobal: true}),
     UsersModule,
     OtpModule,

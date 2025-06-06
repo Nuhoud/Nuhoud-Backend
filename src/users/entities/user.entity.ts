@@ -17,8 +17,8 @@ export class Education {
   @Prop({ required: true })
   university: string;
 
-  @Prop({ required: true })
-  startYear?: number;
+/*   @Prop({ required: true })
+  startYear?: number; */
 
   @Prop()
   endYear?: number;
@@ -37,6 +37,9 @@ export class Experience {
 
   @Prop({ required: false })
   location?: string;
+
+  @Prop({ default: false })
+  isCurrent?: boolean;
 
   @Prop()
   startDate?: Date;
@@ -80,11 +83,11 @@ export class Skills {
 
 @Schema({ _id: false })
 export class JobPreferences {
-  @Prop({ enum: ['عن بعد', 'في الشركة','مزيج'], required: true })
-  workPlaceType: string;
-
-  @Prop({ enum: ['دوام كامل', 'دوام جزئي', 'عقد', 'مستقل', 'تدريب'], required: true })
-  jobType: string;
+  @Prop({ type: [String], enum: ['عن بعد', 'في الشركة','مزيج'], required: true })
+  workPlaceType: string[];
+  
+  @Prop({ type: [String], enum: ['دوام كامل', 'دوام جزئي', 'عقد', 'مستقل', 'تدريب'], required: true })
+  jobType: string[];
 
   @Prop({ required: true })
   jobLocation: string;
@@ -177,7 +180,7 @@ export class User {
   education: Education[];
 
   @Prop({ type: [Experience], default: [] })
-  experience: Experience[];
+  experiences: Experience[];
 
   @Prop({ type: [Certification], default: [] })
   certifications: Certification[];

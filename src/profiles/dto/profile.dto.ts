@@ -9,7 +9,8 @@ import {
   Max, 
   ValidateNested,
   ArrayMinSize,
-  Length
+  Length,
+  IsBoolean
 } from 'class-validator';
 import { Type } from 'class-transformer';
 import { ApiProperty } from '@nestjs/swagger';
@@ -70,13 +71,13 @@ export class EducationDto {
   @Length(2, 200)
   university: string;
 
-  @ApiProperty({ 
+/*   @ApiProperty({ 
     example: 2021
   })
   @IsNumber()
   @Min(1970)
   @Max(new Date().getFullYear() + 10)
-  startYear: number;
+  startYear: number; */
 
   @ApiProperty({ 
     example: 2026
@@ -114,6 +115,11 @@ export class ExperienceDto {
   @Length(2, 100)
   company: string;
 
+  @ApiProperty({ example: 'Aleppo, Syria', required: false })
+  @IsOptional()
+  @IsString()
+  location?: string;
+
   @ApiProperty({ 
     example: '2022-01-01',
     description: 'Start date in YYYY-MM-DD format'
@@ -121,6 +127,11 @@ export class ExperienceDto {
   @IsOptional()
   @IsDateString()
   startDate?: string;
+
+  @ApiProperty({ example: true, required: false })
+  @IsOptional()
+  @IsBoolean()
+  isCurrent?: boolean;
 
   @ApiProperty({ 
     example: '2023-06-30',
@@ -169,18 +180,22 @@ export class CertificationDto {
 // Job Preferences DTO
 export class JobPreferencesDto {
   @ApiProperty({ 
-    enum: ['عن بعد', 'في الشركة'],
-    example: 'عن بعد'
+    enum: ['عن بعد', 'في الشركة','مزيج'],
+    example: ['عن بعد', 'في الشركة'],
+    isArray: true
   })
-  @IsEnum(['عن بعد', 'في الشركة'])
-  workPlaceType: string;
+  @IsArray()
+  @IsEnum(['عن بعد', 'في الشركة','مزيج'], { each: true })
+  workPlaceType: string[];
 
   @ApiProperty({ 
     enum: ['دوام كامل', 'دوام جزئي', 'عقد', 'مستقل', 'تدريب'],
-    example: 'دوام كامل'
+    example: ['مستقل', 'دوام كامل'],
+    isArray: true
   })
-  @IsEnum(['دوام كامل', 'دوام جزئي', 'عقد', 'مستقل', 'تدريب'])
-  jobType: string;
+  @IsArray()
+  @IsEnum(['دوام كامل', 'دوام جزئي', 'عقد', 'مستقل', 'تدريب'], { each: true })
+  jobType: string[];
 
   @ApiProperty({ 
     example: 'Germany'
@@ -230,7 +245,7 @@ export class StepOneDto {
   @Type(() => ExperienceDto)
   @IsArray()
   @IsOptional()
-  experience: ExperienceDto[];
+  experiences : ExperienceDto[];
 
   @ApiProperty({ type: [CertificationDto], required: false })
   @ValidateNested({ each: true })
