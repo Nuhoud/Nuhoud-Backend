@@ -10,12 +10,13 @@ import { AuthGuard } from '../auth/guards/auth.guard';
     MongooseModule.forFeature([{ name: User.name, schema: UserSchema }]),
   ],
   controllers: [UsersController],
-  providers: [UsersService, 
-            // apply auth guard to all routes
-              {
-                provide: APP_GUARD,
-                useClass: AuthGuard,
-              }
+  providers: [
+    UsersService, 
+    // apply auth guard to all routes
+    {
+      provide: APP_GUARD,
+      useClass: AuthGuard,
+    }
   ],
   // Export service to be used in other modules (AuthModule)
   exports: [UsersService], 

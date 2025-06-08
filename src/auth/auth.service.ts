@@ -102,7 +102,16 @@ export class AuthService {
         throw new ForbiddenException('Account not verified');
       }
   
-      const payload = { _id: user._id, name:user.name, identifier: isMobile? user.mobile : user.email, role: user.role };
+      const payload: any = { 
+        _id: user._id, 
+        name: user.name, 
+        identifier: isMobile ? user.mobile : user.email,
+        role: user.role 
+      };
+      if (user.role === 'employer' && user.company?.name) {
+        payload.company = user.company.name;
+      }
+      
       const token = await this.jwtService.signAsync(payload);
       return {
         token,
@@ -123,7 +132,16 @@ export class AuthService {
     const user = await this.usersService.findByIdentifier(identifier,isMobile);
     await this.usersService.update(user._id.toString(), { isVerified: true });
         
-    const payload = { _id: user._id, name: user.name, identifier: isMobile? user.mobile : user.email, role: user.role };
+    const payload: any = { 
+      _id: user._id, 
+      name: user.name, 
+      identifier: isMobile ? user.mobile : user.email,
+      role: user.role 
+    };
+    if (user.role === 'employer' && user.company?.name) {
+      payload.company = user.company.name;
+    }
+
     const token = await this.jwtService.signAsync(payload);
     
     return {
