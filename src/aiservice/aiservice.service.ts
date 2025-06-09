@@ -22,12 +22,12 @@ export class AiserviceService {
         jobPreferences: stepOneInfo.jobPreferences
           ? {
               ...stepOneInfo.jobPreferences,
-              workPlaceType:
-                workPlaceTypeMap[stepOneInfo.jobPreferences.workPlaceType] ||
-                stepOneInfo.jobPreferences.workPlaceType,
-              jobType:
-                jobTypeMap[stepOneInfo.jobPreferences.jobType] ||
-                stepOneInfo.jobPreferences.jobType
+              workPlaceType: Array.isArray(stepOneInfo.jobPreferences.workPlaceType)
+                ? stepOneInfo.jobPreferences.workPlaceType.map(jt => workPlaceTypeMap[jt] || jt)
+                : [workPlaceTypeMap[stepOneInfo.jobPreferences.workPlaceType] || stepOneInfo.jobPreferences.workPlaceType],
+              jobType: Array.isArray(stepOneInfo.jobPreferences.jobType)
+                ? stepOneInfo.jobPreferences.jobType.map(jt => jobTypeMap[jt] || jt)
+                : [jobTypeMap[stepOneInfo.jobPreferences.jobType] || stepOneInfo.jobPreferences.jobType]
             }
           : undefined
       };

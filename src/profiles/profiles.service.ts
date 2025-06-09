@@ -28,7 +28,7 @@ export class ProfilesService {
                 dateOfBirth: stepOneInfo.basicInfo.dateOfBirth ? new Date(stepOneInfo.basicInfo.dateOfBirth) : undefined
             };
             
-            const experience = stepOneInfo.experience?.map(exp => ({
+            const experience = stepOneInfo.experiences?.map(exp => ({
                 ...exp,
                 startDate: exp.startDate ? new Date(exp.startDate) : undefined,
                 endDate: exp.endDate ? new Date(exp.endDate) : undefined
@@ -42,13 +42,13 @@ export class ProfilesService {
             user.isFirstTime = false;
             user.basic = basicInfo;
             user.education = stepOneInfo.education;
-            user.experience = experience || [];
+            user.experiences = experience || [];
             user.certifications = certifications || [];
             user.jobPreferences = stepOneInfo.jobPreferences;
             user.goals = stepOneInfo.goals;
 
-            return await user.save();
-            //return await this.aiService.getRecomandedSkills(stepOneInfo);
+            await user.save();
+            return await this.aiService.getRecomandedSkills(stepOneInfo);
                         
         }catch(error){
             if(error.name === 'CastError'){
