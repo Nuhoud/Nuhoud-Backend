@@ -3,7 +3,6 @@ import { Document, Types } from 'mongoose';
 import * as mongoose from 'mongoose';
 import { ApiProperty } from '@nestjs/swagger';
 
-export type UserDocument = User & Document;
 
 // Embedded subdocuments schemas
 @Schema({ _id: false })
@@ -168,40 +167,113 @@ export class User {
   @Prop({ default: true })
   isFirstTime: boolean;
 
-  @Prop({ default: false })
-  isCompleted: boolean;
+  // Fields only for regular users
+  @Prop({ 
+    default: function() {
+      return this.role === 'user' ? false : undefined;
+    }
+  })
+  isCompleted?: boolean;
 
-  // Profile fields - Basic Info
-  @Prop({ type: Basic })
-  basic:Basic;
+  @Prop({ 
+    type: Basic,
+    validate: {
+      validator: function(value) {
+        // Only validate if role is 'user'
+        return this.role !== 'user' || value != null;
+      },
+      message: 'Basic info is required for regular users'
+    }
+  })
+  basic?: Basic;
 
-  // Profile fields - Professional Info (Embedded Documents)
-  @Prop({ type: [Education], default: [] })
-  education: Education[];
+  @Prop({ 
+    type: [Education], 
+    default: function() {
+      return this.role === 'user' ? [] : undefined;
+    }
+  })
+  education?: Education[];
 
-  @Prop({ type: [Experience], default: [] })
-  experiences: Experience[];
+  @Prop({ 
+    type: [Experience], 
+    default: function() {
+      return this.role === 'user' ? [] : undefined;
+    }
+  })
+  experiences?: Experience[];
 
-  @Prop({ type: [Certification], default: [] })
-  certifications: Certification[];
+  @Prop({ 
+    type: [Certification], 
+    default: function() {
+      return this.role === 'user' ? [] : undefined;
+    }
+  })
+  certifications?: Certification[];
 
   @Prop({ type: Skills })
   skills?: Skills;
 
-  // Profile fields - Career Info
   @Prop({ type: JobPreferences })
   jobPreferences?: JobPreferences;
 
   @Prop({ type: Goals })
-  goals?:Goals;
+  goals?: Goals;
 
-  // Company field for employers only
-  @Prop({ type: Company })
+  // Company field only for employers
+  @Prop({ 
+    type: Company,
+    validate: {
+      validator: function(value) {
+        // Only validate if role is 'employer'
+        return this.role !== 'employer' || value != null;
+      },
+      message: 'Company info is required for employers'
+    }
+  })
   company?: Company;
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);
 
+// Pre-save middleware to clean up fields based on role
+UserSchema.pre('save', function(next) {
+  const user = this as any;
+  
+  switch (user.role) {
+    case 'admin':
+      // Remove user-specific and employer-specific fields
+      user.isCompleted = undefined;
+      user.basic = undefined;
+      user.education = undefined;
+      user.experiences = undefined;
+      user.certifications = undefined;
+      user.skills = undefined;
+      user.jobPreferences = undefined;
+      user.goals = undefined;
+      user.company = undefined;
+      break;
+      
+    case 'employer':
+      // Remove user-specific fields
+      user.isCompleted = undefined;
+      user.basic = undefined;
+      user.education = undefined;
+      user.experiences = undefined;
+      user.certifications = undefined;
+      user.skills = undefined;
+      user.jobPreferences = undefined;
+      user.goals = undefined;
+      break;
+      
+    case 'user':
+      // Remove employer-specific fields
+      user.company = undefined;
+      break;
+  }
+  
+  next();
+});
 
 // Add indexes for better query performance
 UserSchema.index({ email: 1 });
@@ -212,14 +284,37 @@ UserSchema.index({ 'skills.technical_skills.name': 1 });
 UserSchema.set('toJSON', {
   transform: (doc, ret) => {
     delete ret.password;
+    delete ret.__v;
+    // Remove role-specific fields from JSON output
+    switch (ret.role) {
+      case 'admin':
+        delete ret.isCompleted;
+        delete ret.basic;
+        delete ret.education;
+        delete ret.experiences;
+        delete ret.certifications;
+        delete ret.skills;
+        delete ret.jobPreferences;
+        delete ret.goals;
+        delete ret.company;
+        break;
+      case 'employer':
+        delete ret.isCompleted;
+        delete ret.basic;
+        delete ret.education;
+        delete ret.experiences;
+        delete ret.certifications;
+        delete ret.skills;
+        delete ret.jobPreferences;
+        delete ret.goals;
+        break;
+      case 'user':
+        delete ret.company;
+        break;
+    }
+    
     return ret;
   },
 });
 
-// Export embedded schemas for potential reuse
-export const EducationSchema = SchemaFactory.createForClass(Education);
-export const WorkExperienceSchema = SchemaFactory.createForClass(Experience);
-export const CertificationSchema = SchemaFactory.createForClass(Certification);
-export const SkillSchema = SchemaFactory.createForClass(Skill);
-export const SkillsSchema = SchemaFactory.createForClass(Skills);
-export const JobPreferencesSchema = SchemaFactory.createForClass(JobPreferences);
+export type UserDocument = User & Document;

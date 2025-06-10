@@ -112,11 +112,13 @@ export class AuthController {
     }
 
     //signup employer
+    @ApiBody({ type: SignupEmployerDto, description: 'Employer user registration data' })
     @Roles(Role.ADMIN)
     @UseGuards(AuthGuard, RolesGuard)
+    @HttpCode(HttpStatus.CREATED)
     @Post('signup-employer')
     async SignupEmployer(@Body() signupEmployerUser: SignupEmployerDto) {
-        return this.authService.signupEmployer(signupEmployerUser, false);
+        return this.authService.signupEmployer(signupEmployerUser);
     }
 
 

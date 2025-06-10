@@ -11,7 +11,6 @@ import { WhatsappService } from 'src/whatsapp-grpc/whatsapp.service';
 import { SignupDto, SignupEmployerDto } from './dto/signup-auth.dto';
 import {ResetPasswordDto} from './dto/resetPassword-auth.dto'
 import { identity } from 'rxjs';
-import { text } from 'stream/consumers';
 
 
 @Injectable()
@@ -80,8 +79,8 @@ export class AuthService {
     return this.usersService.create(signupUser, true, 'admin', isMobile);
   }
 
-  async signupEmployer(signupEmployerUser: SignupEmployerDto, isMobile: boolean) {
-    return this.usersService.create(signupEmployerUser, true, 'employer', isMobile);
+  async signupEmployer(signupEmployerUser: SignupEmployerDto) {
+    return this.usersService.createEmployer(signupEmployerUser);
   }
 
   async login(loginUser: LoginUserDto,isMobile: boolean) {

@@ -1,5 +1,5 @@
 import { BadRequestException, ConflictException, Injectable, InternalServerErrorException, NotFoundException, UnauthorizedException } from '@nestjs/common';
-import { SignupDto } from '../auth/dto/signup-auth.dto';
+import { SignupDto, SignupEmployerDto } from '../auth/dto/signup-auth.dto';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { User } from './entities/user.entity';
@@ -44,6 +44,23 @@ export class UsersService {
         const field = Object.keys(error.keyPattern)[0];
         throw new ConflictException(`User with this ${field} already exists`);
       }
+      throw new InternalServerErrorException('Failed to create user');
+    }
+  }
+
+  async createEmployer(createUserDto: SignupEmployerDto): Promise<User>{
+    try{
+      const hashedPassword = await bcrypt.hash(createUserDto.password, 10);
+      // Create new user with hashed password
+      const createdUser = new this.userModel({
+        ...createUserDto,
+        password: hashedPassword,
+        role: 'employer',
+        isVerified: true,
+        isFirstTime: false
+      });
+      return createdUser.save();
+    }catch(error){
       throw new InternalServerErrorException('Failed to create user');
     }
   }
