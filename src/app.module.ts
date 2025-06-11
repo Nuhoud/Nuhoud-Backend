@@ -12,9 +12,26 @@ import { EmailsModule } from './emails/email.module';
 import { WhatsappModule } from './whatsapp-grpc/whatsapp.module';
 import { ProfilesModule } from './profiles/profiles.module';
 import { AiserviceModule } from './aiservice/aiservice.module';
+import { ApplicationModule } from './application/application.module';
+import { ClientsModule, Transport } from '@nestjs/microservices';
 
 @Module({
   imports: [
+    ClientsModule.register([
+      {
+        name: 'KAFKA_SERVICE',
+        transport: Transport.KAFKA,
+        options: {
+          client: {
+            clientId: 'nohoud',
+            brokers: ['localhost:9092'],
+          },
+          consumer: {
+            groupId: 'nohoud-consumer',
+          },
+        },
+      },
+    ]),
     MongooseModule.forRoot('mongodb://localhost:27017/nuhoud'),
     AuthModule,
     // Load environment variables from the `.env` file and make ConfigService globally available across the entire application
@@ -25,6 +42,7 @@ import { AiserviceModule } from './aiservice/aiservice.module';
     WhatsappModule,
     ProfilesModule,
     AiserviceModule,
+    ApplicationModule,
   ],
   controllers: [AppController, AuthController],
   providers: [AppService, AuthService],
