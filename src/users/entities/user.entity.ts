@@ -276,8 +276,9 @@ UserSchema.pre('save', function(next) {
 });
 
 // Add indexes for better query performance
-UserSchema.index({ email: 1 });
-UserSchema.index({ mobile: 1 });
+/* UserSchema.index({ email: 1 });
+UserSchema.index({ mobile: 1 }); */
+UserSchema.index({ role: 1 });
 UserSchema.index({ 'jobPreferences.jobLocation': 1 });
 UserSchema.index({ 'skills.technical_skills.name': 1 });
 
@@ -285,6 +286,8 @@ UserSchema.set('toJSON', {
   transform: (doc, ret) => {
     delete ret.password;
     delete ret.__v;
+    delete ret.createdAt;
+    delete ret.updatedAt;
     // Remove role-specific fields from JSON output
     switch (ret.role) {
       case 'admin':
