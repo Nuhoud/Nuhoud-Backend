@@ -17,21 +17,6 @@ import { ClientsModule, Transport } from '@nestjs/microservices';
 
 @Module({
   imports: [
-    ClientsModule.register([
-      {
-        name: 'KAFKA_SERVICE',
-        transport: Transport.KAFKA,
-        options: {
-          client: {
-            clientId: 'nohoud',
-            brokers: ['localhost:9092'],
-          },
-          consumer: {
-            groupId: 'nohoud-consumer',
-          },
-        },
-      },
-    ]),
     MongooseModule.forRoot('mongodb://localhost:27017/nuhoud'),
     AuthModule,
     // Load environment variables from the `.env` file and make ConfigService globally available across the entire application
