@@ -12,6 +12,8 @@ import { EmailsModule } from './emails/email.module';
 import { WhatsappModule } from './whatsapp-grpc/whatsapp.module';
 import { ProfilesModule } from './profiles/profiles.module';
 import { AiserviceModule } from './aiservice/aiservice.module';
+import { ApplicationModule } from './application/application.module';
+import { ClientsModule, Transport } from '@nestjs/microservices';
 
 @Module({
   imports: [
@@ -25,6 +27,7 @@ import { AiserviceModule } from './aiservice/aiservice.module';
     WhatsappModule,
     ProfilesModule,
     AiserviceModule,
+    ApplicationModule,
   ],
   controllers: [AppController, AuthController],
   providers: [AppService, AuthService],
