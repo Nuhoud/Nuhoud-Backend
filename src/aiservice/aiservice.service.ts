@@ -4,6 +4,8 @@ import { HttpService } from '@nestjs/axios';
 import { lastValueFrom } from 'rxjs';
 import { genderMap, workPlaceTypeMap, jobTypeMap } from './dto/dictionary';
 import * as dotenv from 'dotenv';
+import { Model } from 'mongoose';
+import { UserDocument } from '../users/entities/user.entity';
 dotenv.config();
 
 @Injectable()
@@ -42,6 +44,10 @@ export class AiserviceService {
     } catch (error) {
       throw new Error('Failed to get recomanded skills');
     }
+  }
+
+  async getRecomandedPlan(user: any){
+
   }
 
 

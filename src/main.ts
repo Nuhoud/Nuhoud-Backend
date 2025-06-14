@@ -15,19 +15,24 @@ async function bootstrap() {
   // Setting up Swagger for API documentation and testing
   setupSwagger(app);
 
-  const kafkaMicroservice = app.connectMicroservice<MicroserviceOptions>({
-    transport: Transport.KAFKA,
-    options: {
-      client: {
-        clientId: 'nohoud',
-        brokers: ['localhost:9092'],
+
+  try {
+    const kafkaMicroservice = app.connectMicroservice<MicroserviceOptions>({
+      transport: Transport.KAFKA,
+      options: {
+        client: {
+          clientId: 'nohoud',
+          brokers: ['localhost:9092'],
+        },
+        consumer: {
+          groupId: 'nohoud-consumer',
+        },
       },
-      consumer: {
-        groupId: 'nohoud-consumer',
-      },
-    },
-  });
-  await app.startAllMicroservices();
+    });
+    await app.startAllMicroservices();
+  } catch (e) {
+    console.log('Kafka connection failed, continuing without it');
+  }
 
   await app.listen(process.env.PORT ?? 3000);
 }

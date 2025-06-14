@@ -66,8 +66,8 @@ export class ProfilesService {
             }
             user.skills = stepTwoInfo;
 
-            return await user.save();
-
+            await user.save();
+            return await this.aiService.getRecomandedPlan(user);
         }catch(error){
             if(error.name === 'CastError'){
                 throw new BadRequestException('Invalid user ID format');
