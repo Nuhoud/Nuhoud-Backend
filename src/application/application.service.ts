@@ -13,7 +13,7 @@ export class ApplicationService {
     @Inject('KAFKA_SERVICE') private readonly kafkaClient: ClientKafka,
   ) {}
 
-  async sumbitApplication( jobId:string,joboffer: CreateApplicationDto, userId:string){
+  async sumbitApplication( jobOfferId:string,joboffer: CreateApplicationDto, userId:string){
     const user = await this.usersService.findOne(userId);
     if(!user){
         throw new NotFoundException(`User with ID ${userId} not found`);
@@ -28,7 +28,7 @@ export class ApplicationService {
     }
     const employerEmail = employer.email;
     
-    const userSnapshot = {
+    const userSnap = {
       name: user.name,
       ...(user.email && { email: user.email }), 
       ...(user.mobile && { mobile: user.mobile }),
@@ -44,9 +44,10 @@ export class ApplicationService {
     try{
       await firstValueFrom(
         this.kafkaClient.emit('job.application.submit', {
-          jobId,
+          jobOfferId,
+          userId,
           employerEmail,
-          userSnapshot,
+          userSnap,
         })
       );
       return { status: 'ok' };

@@ -17,13 +17,4 @@ export class CreateApplicationDto {
   @IsString()
   @IsNotEmpty()
   companyName: string;
-
-  @ApiProperty({
-    description: 'Current status of the application',
-    enum: ['active', 'closed', 'expired', 'draft'],
-    example: 'active',
-    default: 'active',
-  })
-  @IsEnum(['active', 'closed', 'expired', 'draft'])
-  status: string;
 }
