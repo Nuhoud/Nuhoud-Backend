@@ -2,11 +2,16 @@ import { BadRequestException, ConflictException, Injectable, InternalServerError
 import { SignupDto, SignupEmployerDto } from '../auth/dto/signup-auth.dto';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
+import {PaginationOptionsDto} from './dto/pagination.dto';
+import {UserFiltersDto}from './dto/userFilter.dto'
+
 import { User } from './entities/user.entity';
 import { Model } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
 import { UserDocument } from './entities/user.entity';
 import * as bcrypt from 'bcryptjs';
+
+
 @Injectable()
 export class UsersService {
   constructor(
@@ -65,11 +70,45 @@ export class UsersService {
     }
   }
 
-  async findAll(): Promise<User[]> {
-    try {
-      return await this.userModel.find().exec();
-    } catch (error) {
-      throw new InternalServerErrorException('Failed to find users');;
+  async findAll(filters: UserFiltersDto={}, pagination: PaginationOptionsDto = {}): Promise<{
+    data: UserDocument[];
+    total: number;
+    page: number;
+    totalPages: number; }> 
+  {
+    const {
+        page = 1,
+        limit = 10,
+        sortBy = 'postedAt',
+        sortOrder = 'desc'
+    } = pagination;
+
+    // create MongoDB query based on the filters
+    const query = this.buildFilterQuery(filters);
+
+    const sortOptions: any = {};
+    sortOptions[sortBy] = sortOrder === 'desc' ? -1 : 1;
+
+    const skip = (page - 1) * limit;
+    try{
+        const [data, total] = await Promise.all([
+            this.userModel
+              .find(query)
+              .sort(sortOptions)
+              .skip(skip)
+              .limit(limit)
+              .exec(),
+            this.userModel.countDocuments()
+        ]);
+        
+        return {
+            data,
+            total,
+            page,
+            totalPages: Math.ceil(total / limit)
+        };
+    }catch(error){
+        throw new NotFoundException('Users not found');
     }
   }
 
@@ -145,6 +184,16 @@ export class UsersService {
   async findByIdentifier(identifier: string,isMobile: boolean) :Promise<any> {
     const user = await this.userModel.findOne({ [isMobile ? 'mobile' : 'email']: identifier }).exec();
     return user;
+  }
+
+  // Helper method to build filter query
+  private buildFilterQuery(filters: UserFiltersDto): any {
+    const query: any = {};
+
+    if (filters.role) {
+      query.role = filters.role;
+    }
+    return query;
   }
 
 }

@@ -1,7 +1,10 @@
-import { Controller, Get, Request, Body, Patch, Param, Delete, HttpStatus, HttpCode } from '@nestjs/common';
+import { Controller, Get,Query, Request, Body, Patch, Param, Delete, HttpStatus, HttpCode } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
+import {PaginationOptionsDto}from './dto/pagination.dto'
+import {UserFiltersDto}from './dto/userFilter.dto'
+
 import { User } from './entities/user.entity';
 import { Public } from '../public.decorator';
 import { ApiBearerAuth, ApiBody, ApiCreatedResponse, ApiOkResponse, ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
@@ -20,15 +23,14 @@ export class UsersController {
   // get all users
   @ApiOkResponse({ 
     description: 'Returns all users',
-    type: CreateUserDto,
-    isArray: true
   })
   @Roles(Role.ADMIN)
   @UseGuards(RolesGuard)
   @Get()
-  async findAll(): Promise<User[]> {
-    return this.usersService.findAll();
+  async findAll(@Query() filters: UserFiltersDto,@Query() pagination: PaginationOptionsDto) {
+    return this.usersService.findAll(filters,pagination);
   }
+  
 
 
   // get user profile
@@ -37,7 +39,7 @@ export class UsersController {
     type: CreateUserDto
   })
   @ApiResponse({ status: 404, description: 'User not found' })
-  @Get('profile')
+  @Get('my-profile')
   async getProfile(@Request() req: Request): Promise<User> {
     //console.log(req)
     return this.usersService.findOne(req['user']._id);
