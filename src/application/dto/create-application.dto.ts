@@ -17,4 +17,15 @@ export class CreateApplicationDto {
   @IsString()
   @IsNotEmpty()
   companyName: string;
+
+  @ApiProperty({
+    description: 'Job position title',
+    example: 'Senior Software Engineer',
+    minLength: 1,
+    maxLength: 100,
+    type: 'string'
+  })
+  @IsString({ message: 'Title must be a string' })
+  @IsNotEmpty({ message: 'Title is required' })
+  title: string;
 }

@@ -13,6 +13,15 @@ export class ApplicationService {
     @Inject('KAFKA_SERVICE') private readonly kafkaClient: ClientKafka,
   ) {}
 
+  async sendKafkaEvent( topicName:string , value :any){
+    await firstValueFrom(
+        this.kafkaClient.emit(topicName, {
+            value
+        })
+    )
+  }
+
+
   async sumbitApplication( jobOfferId:string,joboffer: CreateApplicationDto, userId:string){
     const user = await this.usersService.findOne(userId);
     if(!user){
@@ -27,6 +36,8 @@ export class ApplicationService {
       throw new NotFoundException(`Employer with ID ${joboffer.employerId} not found`);
     }
     const employerEmail = employer.email;
+    const companyName = employer.company?.name;
+    const title = joboffer.title;
     
     const userSnap = {
       name: user.name,
@@ -42,14 +53,13 @@ export class ApplicationService {
     };
 
     try{
-      await firstValueFrom(
-        this.kafkaClient.emit('job.application.submit', {
-          jobOfferId,
-          userId,
-          employerEmail,
-          userSnap,
-        })
-      );
+      await this.sendKafkaEvent('job.application.submit',{
+        jobOfferId,
+        userId,
+        title,
+        employerEmail,
+        userSnap,
+      });
       return { status: 'ok' };
     }catch(error){
       throw new InternalServerErrorException('Failed to submit application');

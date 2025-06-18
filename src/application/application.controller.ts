@@ -27,9 +27,11 @@ export class ApplicationController {
   }
   
 
+  /*   
   @EventPattern('job.application.statusChange')
   handleStatusChange(@Payload() message: any) {
     console.log('Received status change:', message);
-  }
+  } 
+    */
 
 }
