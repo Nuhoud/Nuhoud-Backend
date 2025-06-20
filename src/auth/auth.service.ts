@@ -34,7 +34,7 @@ export class AuthService {
 
       if(isMobile){
         console.log('sendWhatsAppMessage');
-        this.whatsappService.sendMessage(signupUser.identifier, otpCode.toString())
+        this.whatsappService.sendMessage(signupUser.identifier, this.getOtpMessageTemplate(signupUser.name,otpCode.toString(),"SignUP",5))
         .subscribe({
           next: (result) => {
             console.log('WhatsApp message sent successfully:', result);
@@ -160,18 +160,24 @@ export class AuthService {
     if(!user){
       throw new NotFoundException(`User not found`);
     }
-
-    // Check if user is already verified
-    if (user.isVerified) {
-      throw new BadRequestException('account is already verified');
-    }
     
     // Generate new OTP
     const { otpCode } = await this.otpService.generateOtp(identifier,isMobile);
     
     // Send OTP
     if(isMobile){
-      await this.whatsappService.sendMessage(identifier, otpCode.toString());
+      this.whatsappService.sendMessage(identifier, this.getOtpMessageTemplate(user.name,otpCode.toString(),"reset Password",5))
+      .subscribe({
+        next: (result) => {
+          console.log('WhatsApp message sent successfully:', result);
+        },
+        error: (err) => {
+          console.error('Error sending WhatsApp message:', err);
+        },
+        complete: () => {
+          console.log('WhatsApp message sending completed');
+        }
+      });
     }else{
       await this.emailService.sendOTP(identifier, otpCode);
     }
@@ -198,15 +204,24 @@ export class AuthService {
   
     // Send OTP via email or WhatsApp
     if (isMobile) {
-      await this.whatsappService.sendMessage(
-        identifier, 
-        `Your password reset code is: ${otpCode}`
-      );
+      this.whatsappService.sendMessage(identifier, this.getOtpMessageTemplate(user.name,otpCode.toString(),"reset Password",5))
+      .subscribe({
+        next: (result) => {
+          console.log('WhatsApp message sent successfully:', result);
+        },
+        error: (err) => {
+          console.error('Error sending WhatsApp message:', err);
+        },
+        complete: () => {
+          console.log('WhatsApp message sending completed');
+        }
+      });
     } else {
-      await this.emailService.sendOTP(
+      const result = await this.emailService.sendOTP(
         identifier, 
         otpCode
       );
+      console.log(result);
     }
   
     return {
@@ -236,5 +251,20 @@ export class AuthService {
   }
 
 
+
+  getOtpMessageTemplate(user: string, otpCode: string, purpose: string, otpExpiryMinutes: number): string {
+    return `📲 Your One-Time Password (OTP)
+  
+          Hello ${user},
+  
+          Your OTP for [Purpose: ${purpose}] is:
+          🔢 ${otpCode}
+  
+          ⚠️ Do not share this code with anyone. This OTP is valid for ${otpExpiryMinutes} minutes.
+  
+          Need help? Contact us at contact@nuhoud.com.
+  
+          Thank you,`;
+  }
 }
 
