@@ -3,7 +3,8 @@ import { ApplicationService } from './application.service';
 import { ApplicationController } from './application.controller';
 import { UsersModule } from '../users/users.module';
 import { ClientsModule, Transport } from '@nestjs/microservices';
-
+import * as dotenv from 'dotenv';
+dotenv.config();
 @Module({
   imports:[
     ClientsModule.register([
@@ -13,7 +14,7 @@ import { ClientsModule, Transport } from '@nestjs/microservices';
         options: {
           client: {
             clientId: 'nohoud',
-            brokers: ['localhost:9092'],
+            brokers: [process.env.KAFKA_URL || 'localhost:9092'],
           },
           consumer: {
             groupId: 'nohoud-consumer',

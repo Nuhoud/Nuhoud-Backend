@@ -232,13 +232,13 @@ export class AuthService {
     };
   }
   
-  async resetPassword(resetPasswordDto: ResetPasswordDto, isMobile: boolean): Promise<any> {
-      const { identifier,newPassword } = resetPasswordDto;
+  async resetPassword(resetPasswordDto: ResetPasswordDto, userId: string): Promise<any> {
+      const { newPassword } = resetPasswordDto;
       
       // Find user and update password 
-      const user = await this.usersService.findByIdentifier(identifier, isMobile);
+      const user = await this.usersService.findOne(userId);
       if (!user) {
-        throw new NotFoundException(`User with this ${isMobile ? 'mobile number' : 'email'} not found`);
+        throw new NotFoundException(`User with this ID not found`);
       }
       
       // Update user's password

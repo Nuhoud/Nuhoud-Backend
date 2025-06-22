@@ -14,7 +14,7 @@ dotenv.config();
         options: {
           package: 'alerts',
           protoPath: join(__dirname, '../proto/alerts.proto' ),
-          url: process.env.ALERTS_GRPC_URL,
+          url: process.env.ALERTS_GRPC_URL || 'localhost:50051',
         },
       },
     ]),

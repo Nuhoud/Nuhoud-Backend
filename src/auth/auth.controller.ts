@@ -26,10 +26,8 @@ export class AuthController {
     @ApiOperation({ summary: 'Register a new user' })
     @ApiBody({ type: SignupDto, description: 'User registration data' })
     @ApiCreatedResponse({ 
-        description: 'User has been successfully created',
-        type: SignupDto 
+        description: 'OTP sent to you identifier', 
     })
-    @ApiResponse({ status: 400, description: 'Bad request' })
     @HttpCode(HttpStatus.CREATED)
     @Public()
     @Post('signup')
@@ -41,7 +39,9 @@ export class AuthController {
     // verify-otp
     @ApiOperation({ summary: 'Verify OTP for user registration' })
     @ApiBody({ type: VerifyOtpDto, description: 'OTP verification data' })
-    @ApiResponse({ status: 400, description: 'Bad request' })
+    @ApiCreatedResponse({ 
+        description: 'OTP verified successfully',
+    })
     @HttpCode(HttpStatus.OK)
     @Public()
     @Post('verify-otp')
@@ -56,7 +56,6 @@ export class AuthController {
     @ApiOkResponse({
         description: 'OTP has been successfully resent',
     })
-    @ApiResponse({ status: 400, description: 'Bad request' })
     @HttpCode(HttpStatus.OK)
     @Public()
     @Post('resend-otp')
@@ -77,7 +76,9 @@ export class AuthController {
     // verify ResetPassword Otp
     @ApiOperation({ summary: 'Verify OTP for reset password' })
     @ApiBody({ type: VerifyOtpDto, description: 'OTP verification data' })
-    @ApiResponse({ status: 400, description: 'Bad request' })
+    @ApiOkResponse({ 
+        description: 'OTP verified successfully',
+    })
     @HttpCode(HttpStatus.OK)
     @Public()
     @Post('verifyResetPasswordOtp')
@@ -90,8 +91,9 @@ export class AuthController {
     @ApiBody({ type: ResetPasswordDto, description: 'Password reset data' })
     @UseGuards(AuthGuard)
     @Post('resetPassword')
-    async resetPassword(@Body() resetPasswordDto: ResetPasswordDto, @Query('isMobile', ParseBoolPipe) isMobile: boolean  = false){
-        return this.authService.resetPassword(resetPasswordDto,isMobile);
+    async resetPassword(@Body() resetPasswordDto: ResetPasswordDto,@Request() req: Request){
+        const userId = req['user']._id;
+        return this.authService.resetPassword(resetPasswordDto,userId);
     }
     
     // signup admin

@@ -3,10 +3,14 @@ import { AppModule } from './app.module';
 import { GlobalPipes } from './config/global-pipes';
 import { setupSwagger } from './config/swagger.config';
 import { MicroserviceOptions, Transport } from '@nestjs/microservices';
+import * as dotenv from 'dotenv';
+dotenv.config();
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
-  app.enableCors();
+  app.enableCors({
+    origin: '*',
+  });
 
   // Enable global pipes
   // Toggling the global pipes for validation and transformation across the app
@@ -23,7 +27,7 @@ async function bootstrap() {
       options: {
         client: {
           clientId: 'nohoud',
-          brokers: ['localhost:9092'],
+          brokers: [process.env.KAFKA_URL || 'localhost:9092'],
         },
         consumer: {
           groupId: 'nohoud-consumer',
