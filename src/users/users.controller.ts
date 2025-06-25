@@ -28,6 +28,7 @@ export class UsersController {
   @UseGuards(RolesGuard)
   @Get()
   async findAll(@Query() filters: UserFiltersDto,@Query() pagination: PaginationOptionsDto) {
+    console.log("here;")
     return this.usersService.findAll(filters,pagination);
   }
   
