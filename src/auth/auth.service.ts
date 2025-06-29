@@ -10,7 +10,7 @@ import { ResendOtpDto } from './dto/resend-otp.dto';
 import { WhatsappService } from 'src/whatsapp-grpc/whatsapp.service';
 import { SignupDto, SignupEmployerDto } from './dto/signup-auth.dto';
 import {ResetPasswordDto} from './dto/resetPassword-auth.dto'
-import { identity } from 'rxjs';
+import { lastValueFrom } from 'rxjs';
 
 
 @Injectable()
@@ -47,7 +47,9 @@ export class AuthService {
           }
         });
       }else{
-        await this.emailService.sendOTP(signupUser.identifier, otpCode)
+        //await lastValueFrom(this.emailService.sendOTP(signupUser.identifier, otpCode))
+        
+        this.emailService.sendOTP(signupUser.identifier, otpCode)
         .subscribe({
           next: (result) => {
             console.log('Email message sent successfully:', result);

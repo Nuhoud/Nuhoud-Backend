@@ -1,19 +1,13 @@
-# Stage 1: Build
-FROM node:18 AS development
+FROM node:21
 
 WORKDIR /usr/src/app
 
-# Copy package.json and package-lock.json
 COPY package*.json ./
 
-# Install dependencies
 RUN npm install
 
-# Copy the rest of the application's source code
 COPY . .
 
-# Ensure proto directory exists and copy proto files to the correct location
-RUN mkdir -p dist/proto && cp -r src/proto/* dist/proto/
+EXPOSE 3001
 
-# Run the application
-CMD ["npm", "run", "start:dev"]
+CMD ["npm", "run", "start:dev"] 
