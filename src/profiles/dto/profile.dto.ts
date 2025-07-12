@@ -93,8 +93,8 @@ export class EducationDto {
   })
   @IsOptional()
   @IsNumber()
-  @Min(0)
-  @Max(4)
+  @Min(0, { message: 'GPA cannot be less than 0.' })
+  @Max(4, { message: 'GPA cannot be greater than 4.' })
   GPA?: number;
 }
 

@@ -21,7 +21,6 @@ dotenv.config();
     MongooseModule.forRoot(process.env.MONGODB_URL || 'mongodb://localhost:27017/nuhoud'),
     AuthModule,
     // Load environment variables from the `.env` file and make ConfigService globally available across the entire application
-    ConfigModule.forRoot({isGlobal: true}),
     UsersModule,
     OtpModule,
     EmailsModule,
@@ -29,6 +28,7 @@ dotenv.config();
     ProfilesModule,
     AiserviceModule,
     ApplicationModule,
+    ConfigModule.forRoot({isGlobal: true}),
   ],
   controllers: [AppController, AuthController],
   providers: [AppService, AuthService],
