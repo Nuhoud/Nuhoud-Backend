@@ -201,7 +201,7 @@ export class ProfilesService {
             user.goals = stepOneInfo.goals;
             
             await user.save();
-            //return await this.aiService.getRecomandedSkills(stepOneInfo);
+            await this.aiService.generateSkills(stepOneInfo);
                         
         }catch(error){
             if(error.name === 'CastError'){
@@ -220,7 +220,7 @@ export class ProfilesService {
             user.skills = stepTwoInfo;
 
             await user.save();
-            //return await this.aiService.getRecomandedPlan(user);
+            await this.aiService.generateDevPlan(user);
         }catch(error){
             if(error.name === 'CastError'){
                 throw new BadRequestException('Invalid user ID format');
