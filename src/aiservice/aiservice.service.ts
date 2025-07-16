@@ -134,6 +134,23 @@ export class AiserviceService {
     const rec = await this.SkillsRecModel.findOne({ userId: new Types.ObjectId(userId) }).lean();
     return rec ? (rec as any).skills : null;
   }
+  // method to delete the recommended skills form database when user select his finall skills
+  async deleteRecommendedSkillsForUser(userId: string) {
+    try {
+      if (!Types.ObjectId.isValid(userId)) {
+        throw new BadRequestException('Invalid user ID format');
+      }
+
+      const result = await this.SkillsRecModel.deleteOne({ userId: new Types.ObjectId(userId) });
+      return result;
+    } catch (error) {
+      if (error instanceof BadRequestException) {
+        throw error;
+      }
+      throw new BadRequestException('Failed to delete development plan: ' + error.message);
+    }
+  }
+
 
   // used by profile module
   async generateSkills(stepOneInfo: StepOneDto){
@@ -159,7 +176,7 @@ export class AiserviceService {
       };
 
       await lastValueFrom(
-        this.httpService.post(`${process.env.N8N_URL}/webhook/step1`, translatedStepOneInfo),
+        this.httpService.post(`${process.env.N8N_URL1}`, translatedStepOneInfo),
       );
 
     } catch (error) {
@@ -171,7 +188,7 @@ export class AiserviceService {
   async generateDevPlan(user: any) {
     try{
       await lastValueFrom(
-        this.httpService.post(`${process.env.N8N_URL}/webhook/step2`, user),
+        this.httpService.post(`${process.env.N8N_URL2}`, user),
       );
     }catch(error){
       throw new BadGatewayException('n8n call failed');

@@ -1,0 +1,95 @@
+{
+  "step1": {
+    "jobs": [
+      {
+        "_id": "68725aa38b8635d624d08a71",
+        "title": "Digital Marketing Specialist",
+        "company": "Example Company GmbH",
+        "match": "This role aligns perfectly with your Bachelor's in Business Administration and your interest in digital marketing.  The company is known for its international focus, making your multilingual skills highly valuable.  The role offers a blend of remote and on-site work.",
+        "matchScore": 95
+      },
+      {
+        "_id": "68725b8f8b8635d624d08a73",
+        "title": "E-commerce Marketing Manager (Part-time)",
+        "company": "Online Retail Solutions",
+        "match": "This part-time position is ideal for gaining practical e-commerce experience.  Your business administration background is directly relevant, and the role's emphasis on digital marketing is a perfect fit for your career goals.",
+        "matchScore": 88
+      },
+      {
+        "_id": "68725bd38b8635d624d08a75",
+        "title": "Brand Strategist (Remote)",
+        "company": "Global Branding Agency",
+        "match": "This remote position leverages your strong business acumen and allows you to develop your brand strategy skills further. The agency works with international clients, meaning your language skills are highly valued.",
+        "matchScore": 90
+      }
+    ]
+  },
+  "step2": {
+    "months": [
+      {
+        "month": "Month 1: Foundation (أساسيات)",
+        "tasks": [
+          {
+            "week": 1,
+            "tasks": ["Learn advanced SEO techniques (Search Engine Optimization).", "Start Google Ads certification course (Google Digital Garage).", "Update your LinkedIn profile to reflect your expanding skillset."]
+          },
+          {
+            "week": 2,
+            "tasks": ["Continue Google Ads certification.", "Begin researching different SEO tools (SEMrush, Ahrefs).", "Create a simple personal portfolio showcasing basic marketing projects or case studies."]
+          },
+          {
+            "week": 3,
+            "tasks": ["Complete Google Ads certification.", "Explore free online courses on SEO (e.g., Udemy, Coursera).", "Start networking on LinkedIn and connect with people in your field."]
+          },
+          {
+            "week": 4,
+            "tasks": ["Focus on understanding Google Analytics.", "Begin a beginner's course on Google Analytics.", "Update your CV with relevant keywords and accomplishments."]
+          }
+        ]
+      },
+      {
+        "month": "Month 2: Skills in Action (مهارات عملية)",
+        "tasks": [
+          {
+            "week": 5,
+            "tasks": ["Develop a small-scale digital marketing campaign for a fictional client (or a volunteer organization).", "Practice using SEMrush (or a free alternative).", "Attend online webinars or industry events."]
+          },
+          {
+            "week": 6,
+            "tasks": ["Write a few blog posts on relevant marketing topics.", "Practice using Meta Ads Manager.", "Join a relevant marketing community online (e.g., Facebook groups, Slack channels)."]
+          },
+          {
+            "week": 7,
+            "tasks": ["Develop a basic brand strategy document for a hypothetical company.", "Master the use of Notion for project management and collaboration.", "Reach out to marketing professionals on LinkedIn for informational interviews."]
+          },
+          {
+            "week": 8,
+            "tasks": ["Refine your campaign based on feedback or additional research.", "Experiment with different paid advertising platforms.", "Begin searching for potential mentors in your field."]
+          }
+        ]
+      },
+      {
+        "month": "Month 3: Career Readiness (جاهزية مهنية)",
+        "tasks": [
+          {
+            "week": 9,
+            "tasks": ["Conduct mock interviews with friends or career counselors.", "Get feedback on your portfolio.", "Revise your CV and cover letter based on job descriptions."]
+          },
+          {
+            "week": 10,
+
+            "tasks": ["Apply for 5-10 relevant jobs.", "Improve your online presence (LinkedIn, personal website, etc.).", "Network and build relationships with recruiters."]
+          },
+          {
+            "week": 11,
+            "tasks": ["Follow up on applications and interview requests.", "Prepare for potential interviews by practicing common questions.", "Research companies and industries you're targeting."]
+          },
+          {
+            "week": 12,
+            "tasks": ["Continue applying and networking.", "Analyze your job search results and adapt your strategy as needed.", "Celebrate successes and learn from setbacks."]
+          }
+        ]
+      }
+    ]
+  }
+}

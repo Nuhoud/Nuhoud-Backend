@@ -220,7 +220,9 @@ export class ProfilesService {
             user.skills = stepTwoInfo;
 
             await user.save();
+            await this.aiService.deleteRecommendedSkillsForUser(userId);
             await this.aiService.generateDevPlan(user);
+
         }catch(error){
             if(error.name === 'CastError'){
                 throw new BadRequestException('Invalid user ID format');
@@ -228,6 +230,4 @@ export class ProfilesService {
             throw new InternalServerErrorException('Failed to add step two info');
         }
     }
-  
-
 }

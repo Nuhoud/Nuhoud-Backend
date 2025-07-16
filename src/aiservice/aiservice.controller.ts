@@ -101,11 +101,6 @@ export class AiserviceController {
     summary: 'Get development plan for user',
     description: 'Retrieves the development plan for a specific user'
   })
-  @ApiParam({ 
-    name: 'userId', 
-    description: 'User ID to get development plan for',
-    type: 'string'
-  })
   async getDevelopmentPlan(@Request() req: Request) {
     const userId = req['user']._id;
     try {
