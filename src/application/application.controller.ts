@@ -23,7 +23,6 @@ export class ApplicationController {
   ) {
     const userId = req['user']._id;
     return this.applicationService.sumbitApplication( jobId,joboffer, userId);
-    
   }
   
 
@@ -32,6 +31,6 @@ export class ApplicationController {
   handleStatusChange(@Payload() message: any) {
     console.log('Received status change:', message);
   } 
-    */
+  */
 
 }

@@ -18,11 +18,17 @@ export class ProfilesService {
 
     async getProfile(userId: string){
         try{
-            let user = await this.userModel.findById(userId).exec();
-            if(!user){
+            const profile = await this.userModel
+            .findById(userId)
+            .select('-_id -name -email -role -isVerified -isFirstTime -createdAt -updatedAt -isCompleted -password -__v')
+            .lean()
+            .exec();
+
+            if (!profile) {
                 throw new NotFoundException(`User with ID ${userId} not found`);
             }
-            return user;
+      
+            return profile;
         }catch(error){
             if(error.name === 'CastError'){
                 throw new BadRequestException('Invalid user ID format');
