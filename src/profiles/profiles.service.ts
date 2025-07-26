@@ -256,7 +256,7 @@ export class ProfilesService {
             user.skills = stepTwoInfo;
 
             await user.save();
-            await this.aiService.deleteRecommendedSkillsForUser(userId);
+            //await this.aiService.deleteRecommendedSkillsForUser(userId);
             try {
                 await this.aiService.generateDevPlan(user);
             } catch (err){
