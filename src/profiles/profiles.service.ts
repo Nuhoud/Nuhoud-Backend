@@ -5,7 +5,7 @@ import { Basic, User, UserDocument } from '../users/entities/user.entity';
 import { SkillsDto, StepOneDto } from './dto/profile.dto'
 import { AiserviceService } from '../aiservice/aiservice.service';
 import { UpdateProfileDto } from './dto/update-profile.dto'
-
+import { FallbackDevPlan } from '../aiservice/dto/fallback-devplan.constant';
 
 @Injectable()
 export class ProfilesService {
@@ -207,8 +207,38 @@ export class ProfilesService {
             user.goals = stepOneInfo.goals;
             
             await user.save();
-            await this.aiService.generateSkills(userId,stepOneInfo);
-                        
+            try {
+                await this.aiService.generateSkills(userId, stepOneInfo);
+            } catch (err) {
+                console.error(`AI service failed for user ${userId}:`, err.message);
+          
+                // Fallback default skills DTO
+                const fallbackSkills: SkillsDto = {
+                    technical_skills: [
+                      { name: 'Node.js', level: 75 },
+                      { name: 'Express.js', level: 70 },
+                      { name: 'MongoDB', level: 70 },
+                      { name: 'Docker', level: 55 },
+                      { name: 'Git & GitHub', level: 65 },
+                      { name: 'JavaScript', level: 70 },
+                      { name: 'TypeScript', level: 60 },
+                      { name: 'CI/CD Basics', level: 50 },
+                      { name: 'Agile Methodologies', level: 50 },
+                      { name: 'NLP Fundamentals', level: 40 },
+                    ],
+                    soft_skills: [
+                      { name: 'Communication', level: 65 },
+                      { name: 'Problem Solving', level: 70 },
+                      { name: 'Team Collaboration', level: 65 },
+                      { name: 'Remote Work Efficiency', level: 60 }, // relevant to remote job pref
+                      { name: 'Cultural Awareness', level: 55 }, // multilingual + international goals
+                    ]
+                  };
+          
+                // Save the fallback skills to user profile (or another collection)
+                await this.aiService.saveRecommendedSkillsForUser(userId, fallbackSkills);
+              }
+
         }catch(error){
             if(error.name === 'CastError'){
                 throw new BadRequestException('Invalid user ID format');
@@ -227,8 +257,12 @@ export class ProfilesService {
 
             await user.save();
             await this.aiService.deleteRecommendedSkillsForUser(userId);
-            await this.aiService.generateDevPlan(user);
-
+            try {
+                await this.aiService.generateDevPlan(user);
+            } catch (err){
+                // constant CreateDevplanDTO object for emargency state
+                await this.aiService.createDevelopmentPlan(userId, FallbackDevPlan.data);
+            }
         }catch(error){
             if(error.name === 'CastError'){
                 throw new BadRequestException('Invalid user ID format');
