@@ -207,7 +207,7 @@ export class ProfilesService {
             user.goals = stepOneInfo.goals;
             
             await user.save();
-            await this.aiService.generateSkills(stepOneInfo);
+            await this.aiService.generateSkills(userId,stepOneInfo);
                         
         }catch(error){
             if(error.name === 'CastError'){
