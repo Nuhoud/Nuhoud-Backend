@@ -156,7 +156,8 @@ export class AiserviceService {
   async generateSkills(userId:string,stepOneInfo: StepOneDto){
     try {
       // translation to english
-      const translatedStepOneInfo: StepOneDto = {
+      const translatedStepOneInfo: StepOneDto & { userId: string } = {
+        userId,
         ...stepOneInfo,
         basicInfo: {
           ...stepOneInfo.basicInfo,
@@ -178,7 +179,7 @@ export class AiserviceService {
       //console.log("\n");
       //console.log(JSON.stringify(translatedStepOneInfo, null, 2));
       await lastValueFrom(
-        this.httpService.post(`${process.env.N8N_URL1}:${userId}`, translatedStepOneInfo),
+        this.httpService.post(`${process.env.N8N_URL1}`, translatedStepOneInfo),
       );
 
     } catch (error) {
