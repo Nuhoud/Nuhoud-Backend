@@ -114,7 +114,7 @@ export class UsersService {
 
   async findOne(id: string): Promise<User> {
     try {
-      console.log(id);
+      //console.log(id);
       const user = await this.userModel.findById(id).exec();
       
       if (!user) {

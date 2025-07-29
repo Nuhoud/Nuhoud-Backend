@@ -6,6 +6,7 @@ import { SkillsDto, StepOneDto } from './dto/profile.dto'
 import { AiserviceService } from '../aiservice/aiservice.service';
 import { UpdateProfileDto } from './dto/update-profile.dto'
 import { FallbackDevPlan } from '../aiservice/dto/fallback-devplan.constant';
+import { formatISODateOnly } from './dateHandler';
 
 @Injectable()
 export class ProfilesService {
@@ -16,26 +17,45 @@ export class ProfilesService {
     ){}
 
 
-    async getProfile(userId: string){
-        try{
-            const profile = await this.userModel
+    async getProfile(userId: string) {
+        try {
+            const profile: any = await this.userModel
             .findById(userId)
-            .select('-_id -name -email -role -isVerified -isFirstTime -createdAt -updatedAt -isCompleted -password -__v')
+            .select(
+              '-_id -name -email -role -isVerified -isFirstTime -createdAt -updatedAt -isCompleted -password -__v'
+            )
             .lean()
             .exec();
-
-            if (!profile) {
-                throw new NotFoundException(`User with ID ${userId} not found`);
-            }
       
-            return profile;
-        }catch(error){
-            if(error.name === 'CastError'){
-                throw new BadRequestException('Invalid user ID format');
-            }
-            throw new InternalServerErrorException('Failed to get profile');
+          if (!profile) {
+            throw new NotFoundException(`User with ID ${userId} not found`);
+          }
+      
+          // Format all date fields
+          if (profile.basic?.dateOfBirth)
+            profile.basic.dateOfBirth = formatISODateOnly(profile.basic.dateOfBirth);
+      
+          profile.certifications?.forEach(cert => {
+            if (cert.issueDate) cert.issueDate = formatISODateOnly(cert.issueDate);
+          });
+      
+          profile.education?.forEach(edu => {
+            // endYear is number, no change needed
+          });
+      
+          profile.experiences?.forEach(exp => {
+            if (exp.startDate) exp.startDate = formatISODateOnly(exp.startDate);
+            if (exp.endDate) exp.endDate = formatISODateOnly(exp.endDate);
+          });
+      
+          return profile;
+        } catch (error) {
+          if (error.name === 'CastError') {
+            throw new BadRequestException('Invalid user ID format');
+          }
+          throw new InternalServerErrorException('Failed to get profile');
         }
-    }
+      }
 
     async editProfile(userId: string, updateProfileDto: UpdateProfileDto) {
         try {
