@@ -12,9 +12,14 @@ export class Job {
   @Prop({ required: true })
   _id: string;
 
+  @ApiProperty({ description: 'employerId ID' })
+  @Prop({ required: true })
+  employerId: string;
+  
   @ApiProperty({ description: 'Job offer title' })
   @Prop({ required: true })
   title: string;
+
 
   @ApiProperty({ description: 'Company name' })
   @Prop({ required: false })

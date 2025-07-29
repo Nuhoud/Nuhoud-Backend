@@ -74,6 +74,7 @@ export class AiserviceController {
     description: 'Development plan data from AI service'
   })
   async createDevelopmentPlan(@Param('userId') userId: string,@Body() createDevplanDto: CreateDevplanDto) {
+    console.log(createDevplanDto.step1.jobs);
     try {
       if (!userId) {
         throw new BadRequestException('User ID is required');
