@@ -25,9 +25,9 @@ export class AiserviceController {
   @Public()
   @HttpCode(HttpStatus.CREATED)
   @ApiOperation({ summary: 'Webhook from n8n to save recommended skills' })
-  @ApiBody({ type: [SkillsDto] })
-  async saveRecommendedSkills(@Param('userId') userId: string, @Body() skillsDto: SkillsDto[]) {
-    await this.aiserviceService.saveRecommendedSkillsForUser(userId, skillsDto[0]);
+  @ApiBody({ type: SkillsDto })
+  async saveRecommendedSkills(@Param('userId') userId: string, @Body() skillsDto: SkillsDto) {
+    await this.aiserviceService.saveRecommendedSkillsForUser(userId, skillsDto);
     return { success: true };
   }
 
@@ -70,16 +70,16 @@ export class AiserviceController {
     type: 'string'
   })
   @ApiBody({ 
-    type: [CreateDevplanDto],
+    type: CreateDevplanDto,
     description: 'Development plan data from AI service'
   })
-  async createDevelopmentPlan(@Param('userId') userId: string,@Body() createDevplanDto: CreateDevplanDto[]) {
+  async createDevelopmentPlan(@Param('userId') userId: string,@Body() createDevplanDto: CreateDevplanDto) {
     try {
       if (!userId) {
         throw new BadRequestException('User ID is required');
       }
 
-      const result = await this.aiserviceService.createDevelopmentPlan(userId, createDevplanDto[0]);
+      const result = await this.aiserviceService.createDevelopmentPlan(userId, createDevplanDto);
       return {
         success: true,
         message: 'Development plan created successfully',
