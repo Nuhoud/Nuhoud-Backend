@@ -274,7 +274,7 @@ export class ProfilesService {
                 throw new NotFoundException(`User with ID ${userId} not found`);
             }
             user.skills = stepTwoInfo;
-
+            console.log(user);
             await user.save();
             //await this.aiService.deleteRecommendedSkillsForUser(userId);
             try {

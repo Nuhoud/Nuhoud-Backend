@@ -25,9 +25,9 @@ export class AiserviceController {
   @Public()
   @HttpCode(HttpStatus.CREATED)
   @ApiOperation({ summary: 'Webhook from n8n to save recommended skills' })
-  @ApiBody({ type: SkillsDto })
-  async saveRecommendedSkills(@Param('userId') userId: string, @Body() skillsDto: SkillsDto) {
-    await this.aiserviceService.saveRecommendedSkillsForUser(userId, skillsDto);
+  @ApiBody({ type: [SkillsDto] })
+  async saveRecommendedSkills(@Param('userId') userId: string, @Body() skillsDto: SkillsDto[]) {
+    await this.aiserviceService.saveRecommendedSkillsForUser(userId, skillsDto[0]);
     return { success: true };
   }
 

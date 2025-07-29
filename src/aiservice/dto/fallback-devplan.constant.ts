@@ -7,6 +7,7 @@ export class FallbackDevPlan {
         jobs: [
           {
             _id: "684741da95b823d012de26cb",
+            employerId:"684741da95b823d012de2705",
             title: "Backend Developer",
             company: "Russell Inc",
             match: "This job matches the user's experience as a Backend Developer.  Although the location and required languages don't align, the user's experience with Node.js and MongoDB is relevant. The required experience is significantly higher than the user's.",
@@ -14,6 +15,7 @@ export class FallbackDevPlan {
           },
           {
             _id: "684741da95b823d012de26e1",
+            employerId:"684741da95b823d012de2705",
             title: "Backend Developer",
             company: "Williams PLC",
             match: "The job title matches the user's experience.  The user's experience with MongoDB and their stated interest in working remotely makes this somewhat relevant, despite the location and higher experience requirements.",
@@ -21,6 +23,7 @@ export class FallbackDevPlan {
           },
           {
             _id: "684741da95b823d012de26f6",
+            employerId:"684741da95b823d012de2705",
             title: "Backend Developer",
             company: "Moore-Henry",
             match: "This Backend Developer role has a remote work option, aligning with the user's preference. The user's experience with Node.js and Git is relevant, despite the seniority level discrepancy and location.",
@@ -28,6 +31,7 @@ export class FallbackDevPlan {
           },
           {
             _id: "684741da95b823d012de2700",
+            employerId:"684741da95b823d012de2705",
             title: "Backend Developer",
             company: "Brown, Silva and Lopez",
             match: "This role is a remote Backend Developer position, matching the user's preference. The user's skills in Node.js and Git, and experience with REST APIs are relevant.  The seniority level is higher than the user's.",
@@ -35,6 +39,7 @@ export class FallbackDevPlan {
           },
           {
             _id: "684741da95b823d012de2705",
+            employerId:"684741da95b823d012de2705",
             title: "Backend Developer",
             company: "Cooper-Booker",
             match: "This is a full-time, remote Backend Developer position aligning with the user's preferences. The user's experience with Node.js, REST APIs, and Git makes this a strong match despite the junior level requirement.",

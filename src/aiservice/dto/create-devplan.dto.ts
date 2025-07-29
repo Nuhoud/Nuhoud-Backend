@@ -9,6 +9,11 @@ export class JobDto {
   @IsNotEmpty()
   _id: string;
 
+  @ApiProperty({ description: 'Employer ID', example: '12345' })
+  @IsString()
+  @IsNotEmpty()
+  employerId: string;
+
   @ApiProperty({ description: 'Job title', example: 'Digital Marketing Specialist' })
   @IsString()
   @IsNotEmpty()
