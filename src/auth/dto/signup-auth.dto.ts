@@ -23,8 +23,8 @@ export class SignupDto {
   name: string;
 
   @ApiProperty({
-    description: 'The email or mobile of the user',
-    example: 'kallnaorz2@gmail.com or 963936961320',
+    description: 'The user identifier. Use a Syrian mobile (starts with 9639) when isMobile=true; otherwise provide a valid email.',
+    example: '963957507710',
     required: true,
   })
   @IsNotEmpty({ message: 'Identifier is required' })

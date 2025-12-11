@@ -1,4 +1,4 @@
-import { Body, Controller, Get, HttpCode,Request, HttpStatus, Post, UseGuards, Query, ParseBoolPipe } from '@nestjs/common';
+import { Body, Controller, Get, HttpCode,Request, HttpStatus, Post, UseGuards, Query, ParseBoolPipe, BadRequestException } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { LoginUserDto } from './dto/login-auth.dto';
 import { AuthGuard } from './guards/auth.guard';
@@ -12,6 +12,9 @@ import { ResendOtpDto } from './dto/resend-otp.dto';
 import { SignupDto,SignupEmployerDto } from './dto/signup-auth.dto';
 import { ResetPasswordDto } from './dto/resetPassword-auth.dto';
 import { RequestResetPasswordDto } from './dto/requestResetPassword-auth.dto';
+import { isEmail } from 'class-validator';
+
+const SYRIAN_MOBILE_REGEX = /^9639\d{8}$/;
 
 @ApiTags('Authentication')
 @ApiBearerAuth()
@@ -21,6 +24,19 @@ export class AuthController {
 
     constructor(private authService: AuthService) {}
 
+
+    private validateIdentifier(identifier: string, isMobile: boolean) {
+        if (isMobile) {
+            if (!SYRIAN_MOBILE_REGEX.test(identifier)) {
+                throw new BadRequestException('Mobile number must start with 9639 and be 12 digits long.');
+            }
+            return;
+        }
+
+        if (!isEmail(identifier)) {
+            throw new BadRequestException('Identifier must be a valid email address when isMobile is false.');
+        }
+    }
 
     // signUP user
     @ApiOperation({ summary: 'Register a new user' })
@@ -32,6 +48,7 @@ export class AuthController {
     @Public()
     @Post('signup')
     async Signup(@Body() signupUser: SignupDto, @Query('isMobile', ParseBoolPipe) isMobile: boolean = false) {
+        this.validateIdentifier(signupUser.identifier, isMobile);
         return this.authService.signup(signupUser, isMobile);
     }
 
