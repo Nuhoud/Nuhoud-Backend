@@ -1,4 +1,5 @@
-import { Controller, Get,Request, Post, Body, Patch, Param, Delete,BadGatewayException, UseInterceptors, UploadedFile } from '@nestjs/common';
+import { Controller, Get,Request, Post, Body, Patch, Param, Delete,BadGatewayException, UseInterceptors, UploadedFile,  FileTypeValidator,
+  MaxFileSizeValidator,  ParseFilePipe } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { ProfilesService } from './profiles.service';
 import { Minios3Service } from '../minios3/minios3.service';
@@ -92,17 +93,29 @@ export class ProfilesController {
     schema: {
       type: 'object',
       properties: {
-        file: {
-          type: 'string',
-          format: 'binary',
-        },
+        file: { type: 'string', format: 'binary' },
       },
     },
   })
-  async uploadPhoto(@UploadedFile() file, @Request() req) {
-    // validate size/mime; accept only png/jpg/webp
+  async uploadPhoto(
+    @UploadedFile(
+      new ParseFilePipe({
+        validators: [
+          new MaxFileSizeValidator({
+            maxSize: 2 * 1024 * 1024, // 2MB
+          }),
+          new FileTypeValidator({
+            fileType: /(image\/jpeg|image\/png|image\/webp)/,
+          }),
+        ],
+      }),
+    )
+    file: Express.Multer.File,
+    @Request() req,
+  ) {
     const { bucket, objectKey } = await this.minioS3Service.uploadUserAvatar(req.user._id, file);
-    const url = await this.minioS3Service.presignedGet(bucket, objectKey);
+    const url = await this.minioS3Service.buildPublicUrl(bucket, objectKey);
+  
     await this.profilesService.updatePhoto(req.user._id, url);
     return { url };
   }

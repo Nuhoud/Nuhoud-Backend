@@ -7,6 +7,10 @@ export class Minios3Service {
   private client: Minio.Client;
   private avatarsBucket = process.env.S3_BUCKET_AVATARS || "avatars";
 
+  
+  private publicBaseUrl = (process.env.S3_PUBLIC_BASE_URL || "http://localhost:9000")
+    .replace(/\/$/, "");
+
   constructor() {
     this.client = new Minio.Client({
       endPoint: process.env.S3_ENDPOINT || "localhost",
@@ -24,29 +28,30 @@ export class Minios3Service {
     return "bin";
   }
 
+  buildPublicUrl(bucket: string, objectKey: string) {
+    const safeBucket = encodeURIComponent(bucket);
+    const safeKey = objectKey.split("/").map(encodeURIComponent).join("/");
+    return `${this.publicBaseUrl}/${safeBucket}/${safeKey}`;
+  }
+
   async uploadUserAvatar(userId: string, file: Express.Multer.File) {
     try {
-      const objectKey = `users/${userId}/avatar-${randomUUID()}.${this.ext(file.mimetype)}`;
-        
+      const objectKey = `users/${userId}/avatar.jpg`;
+
       await this.client.putObject(
         this.avatarsBucket,
         objectKey,
         file.buffer,
         file.size,
-        { "Content-Type": file.mimetype }
+        {
+          "Content-Type": file.mimetype,
+        }
       );
 
       return { bucket: this.avatarsBucket, objectKey };
     } catch (e) {
-      throw new InternalServerErrorException("فشل رفع الصورة إلى MinIO");
+      throw new InternalServerErrorException("Failed to upload avatar");
     }
   }
 
-  async presignedGet(bucket: string, objectKey: string, expirySeconds = 3600) {
-    try {
-      return await this.client.presignedGetObject(bucket, objectKey, expirySeconds);
-    } catch {
-      throw new InternalServerErrorException("فشل إنشاء رابط signed للصورة");
-    }
-  }
 }
