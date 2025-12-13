@@ -191,6 +191,26 @@ export class ProfilesService {
         }
     }
 
+    async updatePhoto(userId: string, url: string) {
+        try {
+            const user = await this.userModel.findById(userId).exec();
+            if (!user) {
+                throw new NotFoundException(`User with ID ${userId} not found`);
+            }
+
+            user.url = url;
+            await user.save();
+            return { url };
+        } catch (error) {
+            if (error.name === 'CastError') {
+                throw new BadRequestException('Invalid user ID format');
+            }
+            if (error instanceof NotFoundException) {
+                throw error;
+            }
+            throw new InternalServerErrorException('Failed to update profile photo');
+        }
+    }
 
     async addProfileInfoStepOne(userId: string, stepOneInfo: StepOneDto){
         try{

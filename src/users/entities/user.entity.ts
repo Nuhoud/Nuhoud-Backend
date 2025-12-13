@@ -155,6 +155,9 @@ export class User {
   @Prop({ unique: true, sparse: true, type: String })
   mobile: string;
 
+  @Prop()
+  url?: string;
+
   @Prop({ required: true })
   password: string;
 

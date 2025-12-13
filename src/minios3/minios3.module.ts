@@ -5,5 +5,6 @@ import { Minios3Controller } from './minios3.controller';
 @Module({
   controllers: [Minios3Controller],
   providers: [Minios3Service],
+  exports: [Minios3Service],
 })
 export class Minios3Module {}

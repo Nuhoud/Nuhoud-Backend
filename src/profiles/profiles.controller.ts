@@ -1,8 +1,10 @@
-import { Controller, Get,Request, Post, Body, Patch, Param, Delete,BadGatewayException } from '@nestjs/common';
+import { Controller, Get,Request, Post, Body, Patch, Param, Delete,BadGatewayException, UseInterceptors, UploadedFile } from '@nestjs/common';
+import { FileInterceptor } from '@nestjs/platform-express';
 import { ProfilesService } from './profiles.service';
+import { Minios3Service } from '../minios3/minios3.service';
 import { SkillsDto, StepOneDto } from './dto/profile.dto';
 import { request } from 'http';
-import { ApiBearerAuth, ApiOkResponse, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiBody, ApiConsumes, ApiOkResponse, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { UseGuards } from '@nestjs/common';
 import { AuthGuard } from '../auth/guards/auth.guard';
 import { UpdateProfileDto } from './dto/update-profile.dto';
@@ -12,7 +14,10 @@ import { UpdateProfileDto } from './dto/update-profile.dto';
 @UseGuards(AuthGuard)
 @Controller('profile')
 export class ProfilesController {
-  constructor(private readonly profilesService: ProfilesService) {}
+  constructor(
+    private readonly profilesService: ProfilesService,
+    private readonly minioS3Service: Minios3Service,
+  ) {}
 
   // get user profile
   @ApiOkResponse({ 
@@ -79,4 +84,27 @@ export class ProfilesController {
       });
     }
   }
+
+  @Post('photo')
+  @UseInterceptors(FileInterceptor('file'))
+  @ApiConsumes('multipart/form-data')
+  @ApiBody({
+    schema: {
+      type: 'object',
+      properties: {
+        file: {
+          type: 'string',
+          format: 'binary',
+        },
+      },
+    },
+  })
+  async uploadPhoto(@UploadedFile() file, @Request() req) {
+    // validate size/mime; accept only png/jpg/webp
+    const { bucket, objectKey } = await this.minioS3Service.uploadUserAvatar(req.user._id, file);
+    const url = await this.minioS3Service.presignedGet(bucket, objectKey);
+    await this.profilesService.updatePhoto(req.user._id, url);
+    return { url };
+  }
+
 }

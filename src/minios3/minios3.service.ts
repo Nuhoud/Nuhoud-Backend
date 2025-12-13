@@ -24,7 +24,7 @@ export class Minios3Service {
     return "bin";
   }
 
-      async uploadUserAvatar(userId: string, file: Express.Multer.File) {
+  async uploadUserAvatar(userId: string, file: Express.Multer.File) {
     try {
       const objectKey = `users/${userId}/avatar-${randomUUID()}.${this.ext(file.mimetype)}`;
         
