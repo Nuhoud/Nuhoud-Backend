@@ -5,10 +5,13 @@ import { UsersModule } from '../users/users.module';
 import { MongooseModule } from '@nestjs/mongoose';
 import { UserSchema } from '../users/entities/user.entity';
 import { AiserviceModule } from '../aiservice/aiservice.module';
+import { Minios3Module } from '../minios3/minios3.module';
+
 @Module({
   imports:[
     UsersModule,
     AiserviceModule,
+    Minios3Module,
     MongooseModule.forFeature([
       { name: 'User', schema: UserSchema },
     ]),
