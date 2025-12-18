@@ -14,6 +14,7 @@ import { ProfilesModule } from './profiles/profiles.module';
 import { AiserviceModule } from './aiservice/aiservice.module';
 import { ApplicationModule } from './application/application.module';
 import { ClientsModule, Transport } from '@nestjs/microservices';
+import {FirebaseModule} from './firebase/firebase.module';
 import { Minios3Module } from './minios3/minios3.module';
 import * as dotenv from 'dotenv';
 dotenv.config();
@@ -31,6 +32,7 @@ dotenv.config();
     ApplicationModule,
     ConfigModule.forRoot({isGlobal: true}),
     Minios3Module,
+    FirebaseModule,
   ],
   controllers: [AppController, AuthController],
   providers: [AppService, AuthService],
