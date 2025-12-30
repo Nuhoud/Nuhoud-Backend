@@ -255,18 +255,13 @@ export class AuthService {
 
 
   getOtpMessageTemplate(user: string, otpCode: string, purpose: string, otpExpiryMinutes: number): string {
-    return `📲 Your One-Time Password (OTP)
-  
-          Hello ${user},
-  
-          Your OTP for [Purpose: ${purpose}] is:
-          🔢 ${otpCode}
-  
-          ⚠️ Do not share this code with anyone. This OTP is valid for ${otpExpiryMinutes} minutes.
-  
-          Need help? Contact us at contact@nuhoud.com.
-  
-          Thank you,`;
+    return `📲 رمز التحقق لمرة واحدة (OTP)
+مرحبًا ${user},
+
+رمزك لـ ${purpose} هو: ${otpCode}
+
+⚠️ لا تشارك هذا الرمز مع أي شخص. مدة الصلاحية ${otpExpiryMinutes} دقيقة.
+للمساعدة: contact@nuhoud.com`;
   }
 }
 

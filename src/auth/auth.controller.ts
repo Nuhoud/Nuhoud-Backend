@@ -63,6 +63,7 @@ export class AuthController {
     @Public()
     @Post('verify-otp')
     async vefifySignup(@Body() verifyOtp: VerifyOtpDto, @Query('isMobile', ParseBoolPipe) isMobile: boolean  = false) {
+        this.validateIdentifier(verifyOtp.identifier, isMobile);
         return this.authService.verifyOtp(verifyOtp, isMobile);
     }
 
@@ -77,6 +78,7 @@ export class AuthController {
     @Public()
     @Post('resend-otp')
     async resendOTP(@Body() resendOtp: ResendOtpDto, @Query('isMobile', ParseBoolPipe) isMobile: boolean  = false) {
+        this.validateIdentifier(resendOtp.identifier, isMobile);
         return this.authService.resendOtp(resendOtp, isMobile);
     }
 
@@ -87,6 +89,7 @@ export class AuthController {
     @Public()
     @Post('requestResetPassword')
     async requestResetPassword(@Body() requestResetPasswordDto: RequestResetPasswordDto, @Query('isMobile', ParseBoolPipe) isMobile: boolean  = false){
+        this.validateIdentifier(requestResetPasswordDto.identifier, isMobile);
         return this.authService.requestPasswordReset(requestResetPasswordDto.identifier,isMobile);
     }
 
@@ -100,6 +103,7 @@ export class AuthController {
     @Public()
     @Post('verifyResetPasswordOtp')
     async verifyResetPasswordOtp(@Body() verifyResetPasswordDto: VerifyOtpDto, @Query('isMobile', ParseBoolPipe) isMobile: boolean  = false){
+        this.validateIdentifier(verifyResetPasswordDto.identifier, isMobile);
         return this.authService.verifyOtp(verifyResetPasswordDto,isMobile);
     }
 

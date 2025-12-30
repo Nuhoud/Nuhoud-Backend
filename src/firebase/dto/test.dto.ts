@@ -11,7 +11,7 @@ export class TestFcmDto {
   body: string;
 
   @ApiPropertyOptional({
-    example: { type: 'TEST', screen: 'home' },
+    example: { screen: '/homePage' },
     description: 'Custom key-value data payload (strings only)',
     type: Object,
   })
