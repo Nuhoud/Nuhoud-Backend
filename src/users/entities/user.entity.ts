@@ -289,7 +289,7 @@ UserSchema.set('toJSON', {
   transform: (doc, ret) => {
     delete ret.password;
     delete ret.__v;
-    delete ret.createdAt;
+    //delete ret.createdAt;
     delete ret.updatedAt;
     // Remove role-specific fields from JSON output
     switch (ret.role) {
