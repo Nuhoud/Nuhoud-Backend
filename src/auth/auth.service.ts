@@ -219,11 +219,10 @@ export class AuthService {
         }
       });
     } else {
-      const result = await this.emailService.sendOTP(
-        identifier, 
-        otpCode
-      );
-      console.log(result);
+    const emailResponse = await lastValueFrom(
+      this.emailService.sendOTP(identifier, otpCode)
+    );
+    console.log('Email resend response:', emailResponse); 
     }
   
     return {
