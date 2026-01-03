@@ -1,9 +1,11 @@
 import {
   Body,
   Controller,
+  Get,
   HttpCode,
   HttpStatus,
   Post,
+  Query,
   Request,
   UnauthorizedException,
   UseGuards,
@@ -11,6 +13,7 @@ import {
 import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 
 import { AuthGuard } from '../auth/guards/auth.guard';
+import { NotificationsCursorDto } from './dto/notifications-cursor.dto';
 import { RegisterDeviceDto } from './dto/register-device.dto';
 import { TestFcmDto } from './dto/test.dto';
 import { FcmService } from './firebase.service';
@@ -89,5 +92,38 @@ export class FirebaseController {
     });
 
     return { message: 'Test push notification sent', ...result };
+  }
+
+  @Get('notifications')
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({
+    summary: 'Get user notifications',
+    description: 'Returns stored notifications for the authenticated user.',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Notifications fetched',
+    schema: {
+      example: {
+        data: [],
+        nextCursor: '2025-12-31T23:59:59.000Z',
+        hasMore: true,
+      },
+    },
+  })
+  @ApiResponse({ status: 401, description: 'Unauthorized' })
+  async getNotifications(
+    @Request() req: Request,
+    @Query() query: NotificationsCursorDto,
+  ) {
+    const userId = (req as any)?.user?._id;
+    if (!userId) throw new UnauthorizedException('User context is missing');
+
+    const notifications = await this.fcmService.getUserNotifications(
+      String(userId),
+      { cursor: query.cursor, limit: query.limit },
+    );
+
+    return notifications;
   }
 }

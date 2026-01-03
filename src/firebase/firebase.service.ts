@@ -1,13 +1,18 @@
-import { BadRequestException,Inject,  Injectable,Logger,} from '@nestjs/common';
+import { BadRequestException, Inject, Injectable, Logger } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { App } from 'firebase-admin/app';
 import { getMessaging, Messaging } from 'firebase-admin/messaging';
-import { Model, Types } from 'mongoose';
+import { FilterQuery, Model, Types } from 'mongoose';
 import {
   DevicePlatform,
   DeviceToken,
   DeviceTokenDocument,
 } from './entities/device-token.entity';
+import {
+  Notification,
+  NotificationLean,
+  NotificationDocument,
+} from './entities/notification.entity';
 
 export interface FcmPayload {
   title: string;
@@ -24,6 +29,8 @@ export class FcmService {
     @Inject('FIREBASE_ADMIN') firebaseApp: App,
     @InjectModel(DeviceToken.name)
     private readonly deviceTokenModel: Model<DeviceTokenDocument>,
+    @InjectModel(Notification.name)
+    private readonly notificationModel: Model<NotificationDocument>,
   ) {
     this.messaging = getMessaging(firebaseApp);
   }
@@ -63,6 +70,8 @@ export class FcmService {
       .exec();
   }
 
+
+
   async sendToToken(token: string, payload: FcmPayload): Promise<string | null> {
     const message = {
       token,
@@ -89,6 +98,7 @@ export class FcmService {
   }
 
   async sendToUser( userId: string,payload: FcmPayload,): Promise<{ success: number; failure: number }> {
+
     const normalizedUserId = this.ensureObjectId(userId);
     const devices = await this.deviceTokenModel
       .find({ userId: normalizedUserId, isActive: true })
@@ -100,6 +110,14 @@ export class FcmService {
     if (!tokens.length) {
       return { success: 0, failure: 0 };
     }
+
+    const onenotification = new this.notificationModel({
+        userId: normalizedUserId,
+        title: payload.title,
+        body: payload.body,
+        data: payload.data,
+    });
+    await onenotification.save();
 
     const response = await this.messaging.sendEachForMulticast({
       tokens,
@@ -147,6 +165,45 @@ export class FcmService {
     });
   }
 
+  async getUserNotifications(
+    userId: string,
+    options?: { cursor?: string; limit?: number },
+  ): Promise<{ data: NotificationLean[]; nextCursor: string | null; hasMore: boolean }> {
+    const normalizedUserId = this.ensureObjectId(userId);
+
+    const limit = this.clampLimit(options?.limit);
+    const query: FilterQuery<NotificationDocument> = {
+      userId: normalizedUserId,
+    };
+
+    if (options?.cursor) {
+      const cursorDate = new Date(options.cursor);
+      if (Number.isNaN(cursorDate.getTime())) {
+        throw new BadRequestException('Invalid cursor');
+      }
+
+      query.createdAt = { $lt: cursorDate };
+    }
+
+    // Fetch one extra to determine if there is a next page
+    const results = await this.notificationModel
+      .find(query)
+      .sort({ createdAt: -1, _id: -1 })
+      .select(['title', 'body', 'data', 'createdAt']) // _id included by default
+      .limit(limit + 1)
+      .lean<NotificationLean[]>()
+      .exec();
+
+    const hasMore = results.length > limit;
+    const data = hasMore ? results.slice(0, limit) : results;
+    const nextCursor =
+      hasMore && data.length
+        ? data[data.length - 1].createdAt.toISOString()
+        : null;
+
+    return { data, nextCursor, hasMore };
+  }
+
   private sanitizeData(
     data?: Record<string, any>,
   ): Record<string, string> | undefined {
@@ -179,5 +236,12 @@ export class FcmService {
       return new Types.ObjectId(id);
     }
     throw new BadRequestException('Invalid user id');
+  }
+
+  private clampLimit(limit?: number): number {
+    const fallback = 20;
+    if (!limit) return fallback;
+    const safeLimit = Math.min(Math.max(limit, 1), 50);
+    return safeLimit;
   }
 }
