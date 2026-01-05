@@ -36,7 +36,8 @@ export class Minios3Service {
 
   async uploadUserAvatar(userId: string, file: Express.Multer.File) {
     try {
-      const objectKey = `users/${userId}/avatar.jpg`;
+      const extension = this.ext(file.mimetype);
+      const objectKey = `users/${userId}/avatar-${Date.now()}-${randomUUID()}.${extension}`;
 
       await this.client.putObject(
         this.avatarsBucket,

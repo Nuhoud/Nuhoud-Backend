@@ -53,18 +53,33 @@ export class UsersController {
     type: CreateUserDto
   })
   @ApiResponse({ status: 404, description: 'User not found' })
+  @Roles(Role.ADMIN)
+  @UseGuards(RolesGuard)
   @Get(':id')
   async findOne(@Param('id') id: string,@Request() req: Request): Promise<User> {
     //console.log(req)
     return this.usersService.findOne(id);
   }
 
-
+  //edit my profile
+  @ApiOkResponse({ 
+    description: 'Returns a user profile',
+  })
+  @ApiResponse({ status: 404, description: 'User not found' })
+  @Patch('my-profile')
+  async editProfile(@Body() updateUserDto: UpdateUserDto, @Request() req: Request) {
+    const userId = req['user']._id;
+    console.log("updateUserDto",updateUserDto);
+    return this.usersService.update(userId, updateUserDto);
+  }
+  
   // update user by
   @ApiParam({ name: 'id', description: 'User ID', type: 'string' })
   @ApiBody({ type: UpdateUserDto, description: 'User data to update' })
   @ApiOkResponse({ description: 'Returns the updated user',type: CreateUserDto})
   @ApiResponse({ status: 404, description: 'User not found' })
+  @Roles(Role.ADMIN)
+  @UseGuards(RolesGuard)
   @Patch(':id')
   async update(@Param('id') id: string,@Body() updateUserDto: UpdateUserDto): Promise<User> {
     return this.usersService.update(id, updateUserDto);
